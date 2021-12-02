@@ -22,12 +22,16 @@ jobs:
         with:
           poetry-version: ${{ matrix.poetry-version }}
 
-      - name: Install
+      - name: Install whois
+        run: |
+          sudo apt-get -yqq whois
+
+      - name: Install Python dependencies
         run: |
           poetry install
 
       - name: Run tests
-        run: poetry run pytest -v --cov=whois_parser --cov-report=term-missing
+        run: poetry run pytest -v --cov=abuse_whois --cov-report=term-missing
 
       - name: Coveralls
         env:
