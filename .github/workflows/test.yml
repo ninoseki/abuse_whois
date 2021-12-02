@@ -24,7 +24,7 @@ jobs:
 
       - name: Install whois
         run: |
-          sudo apt-get -yqq whois
+          sudo apt-get -yqq install whois
 
       - name: Install Python dependencies
         run: |
