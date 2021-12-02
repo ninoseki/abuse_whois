@@ -1,0 +1,6 @@
+contact:
+  provider: Glitch
+  address: support@glitch.com
+base_domains:
+  - glitch.me
+  - glitch.com

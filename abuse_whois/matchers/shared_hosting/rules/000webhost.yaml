@@ -1,0 +1,6 @@
+contact:
+  provider: 000webhost
+  address: https://www.000webhost.com/report-abuse
+base_domains:
+  - 000webhost.com
+  - 000webhostapp.com

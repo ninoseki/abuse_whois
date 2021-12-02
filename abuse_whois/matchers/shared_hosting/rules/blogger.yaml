@@ -1,0 +1,6 @@
+contact:
+  provider: Blogger
+  address: https://support.google.com/blogger/answer/76315
+base_domains:
+  - blogger.com
+  - blogspot.com

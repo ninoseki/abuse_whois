@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "abuse_whois"
+version = "0.1.0"
+description = "Find where to report a domain for abuse"
+authors = ["Manabu Niseki <manabu.niseki@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/ninoseki/abuse_whois"
+repository = "https://github.com/ninoseki/abuse_whois"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+email-validator = "^1.1.3"
+fastapi = "^0.70.0"
+loguru = "^0.5.3"
+pydantic = "^1.8.2"
+pyhumps = "^3.0.2"
+sh = "^1.14.2"
+tldextract = "^3.1.2"
+typer = "^0.4.0"
+uvicorn = {extras = ["standard"], version = "^0.15.0"}
+whois-parser = "^0.1.3"
+
+[tool.poetry.dev-dependencies]
+autoflake = "^1.4"
+autopep8 = "^1.6.0"
+black = "^21.11b1"
+coveralls = "^3.3.1"
+isort = "^5.10.1"
+mypy = "^0.910"
+pre-commit = "^2.15.0"
+pytest = "^6.2.5"
+pytest-asyncio = "^0.16.0"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.6.1"
+pytest-randomly = "^3.10.2"
+pytest-sugar = "^0.9.4"
+pyupgrade = "^2.29.1"
+loguru = "^0.5.3"
+
+[tool.poetry.scripts]
+abuse_whois = "abuse_whois.cli:app"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

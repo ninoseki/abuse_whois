@@ -1,0 +1,5 @@
+contact:
+  provider: GoDaddy
+  address: https://supportcenter.godaddy.com/AbuseReport
+base_domains:
+  - godaddysites.com

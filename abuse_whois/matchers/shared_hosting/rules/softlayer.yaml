@@ -1,0 +1,5 @@
+contact:
+  provider: SoftLayer
+  address: abuse@softlayer.com
+base_domains:
+  - appdomain.cloud

@@ -1,0 +1,5 @@
+contact:
+  provider: Adobe
+  address: hellospark@adobe.com
+base_domains:
+  - spark.adobe.com

@@ -1,0 +1,5 @@
+contact:
+  provider: Netlify
+  address: fraud@netlify.com
+base_domains:
+  - netlify.app

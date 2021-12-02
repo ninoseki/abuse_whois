@@ -1,0 +1,7 @@
+contact:
+  provider: Google Cloud
+  address: https://support.google.com/code/contact/cloud_platform_report
+base_domains:
+  - appspot.com
+  - googleapis.com
+  - web.app

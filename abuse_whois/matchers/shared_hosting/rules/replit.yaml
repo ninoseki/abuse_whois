@@ -1,0 +1,5 @@
+contact:
+  provider: Replit
+  address: contact@repl.it
+base_domains:
+  - repl.co
