@@ -16,6 +16,9 @@ This tool is highly inspired from the following libraries:
 
 ```bash
 pip install abuse_whois
+
+# or if you want to use built-in REST API
+pip install abuse_whois[api]
 ```
 
 ## Usage
