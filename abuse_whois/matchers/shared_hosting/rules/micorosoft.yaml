@@ -1,0 +1,5 @@
+contact:
+  provider: Microsoft
+  address: https://msrc.microsoft.com/report/abuse
+base_domains:
+  - blob.core.windows.net

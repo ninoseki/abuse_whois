@@ -1,0 +1,5 @@
+contact:
+  provider: Square
+  address: spoof@squareup.com
+base_domains:
+  - square.site

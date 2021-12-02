@@ -1,0 +1,5 @@
+contact:
+  provider: Google Sites
+  address: https://support.google.com/docs/answer/2463296?hl=en-GB#zippy=%2Cgoogle-sites
+base_domains:
+  - sites.google.com
