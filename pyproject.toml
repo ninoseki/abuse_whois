@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abuse_whois"
-version = "0.1.0"
+version = "0.1.1"
 description = "Find where to report a domain for abuse"
 authors = ["Manabu Niseki <manabu.niseki@gmail.com>"]
 license = "MIT"
