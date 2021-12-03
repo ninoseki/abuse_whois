@@ -1059,7 +1059,7 @@ api = ["fastapi", "uvicorn"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "91d88bc7e1f2c9ba07ba567e543acf545047fcd9fc67685e004cb5f5fc42b892"
+content-hash = "7e9a83b3e1de40cc86bf8c508f3df4fb8a8eaa71667e6c8cfa9efa84a97c7750"
 
 [metadata.files]
 anyio = [
