@@ -4,6 +4,7 @@ from typing import Optional, Pattern
 from whois_parser.dataclasses import WhoisRecord
 
 from abuse_whois.schemas import Contact
+from abuse_whois.utils import is_email
 from abuse_whois.whois import get_whois_record
 
 from .rules import load_rules
@@ -18,14 +19,22 @@ def get_whois_abuse_contact_by_regexp(
     if len(matches) == 0:
         return None
 
-    email = matches[-1]
+    # returns the email address in the bottom
+    matches.reverse()
+    for match in matches:
+        if is_email(str(match)):
+            return Contact(provider=provider, address=str(match))
 
-    return Contact(provider=provider, address=email)
+    return None
 
 
 def get_whois_abuse_contact(record: WhoisRecord) -> Optional[Contact]:
     provider = record.registrar
-    email = record.abuse.email
+    email: Optional[str] = None
+
+    # check email format for just in case
+    if is_email(record.abuse.email or ""):
+        email = record.abuse.email
 
     if email is None:
         # fallback to regexp based search
