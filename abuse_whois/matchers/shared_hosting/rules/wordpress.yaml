@@ -1,0 +1,5 @@
+contact:
+  provider: WordPress
+  address: https://wordpress.com/abuse/
+base_domains:
+  - wordpress.com

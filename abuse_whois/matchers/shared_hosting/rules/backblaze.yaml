@@ -1,0 +1,5 @@
+contact:
+  provider: Backblaze
+  address: reportphishing@backblaze.com
+base_domains:
+  - backblazeb2.com
