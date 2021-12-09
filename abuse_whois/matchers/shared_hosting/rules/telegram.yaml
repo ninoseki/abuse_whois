@@ -1,0 +1,5 @@
+contact:
+  provider: Telegram
+  address: abuse@telegram.org
+base_domains:
+  - telegram.me
