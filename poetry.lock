@@ -1058,7 +1058,7 @@ api = ["fastapi", "loguru", "uvicorn"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "67f0c925e25b8e6002c4d446010754a2393760aa69f114ed30ca5a2b28aef12c"
+content-hash = "30ee18f25f6658a8724fe39c392adcb9b77c19451b57607c26b3796973ee1d15"
 
 [metadata.files]
 anyio = [

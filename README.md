@@ -6,6 +6,8 @@
 
 Yet another way to find where to report a domain for abuse.
 
+![img](./images/overview.jpg)
+
 This tool is highly inspired from the following libraries:
 
 - https://github.com/bradleyjkemp/abwhose
@@ -83,3 +85,13 @@ $ http localhost:8000/api/whois/ address=https://github.com
     "sharedHostingProvider": null
 }
 ```
+
+## Contributions
+
+`abuse_whois` works based on a combination of static rules and a parsing result of whois response.
+
+- Rules:
+  - [Registrar and hosting provider](https://github.com/ninoseki/abuse_whois/wiki/Registrar-and-Hosting-Provider)
+  - [Shared hosting provider](https://github.com/ninoseki/abuse_whois/wiki/Shared-Hosting)
+
+Please submit a PR (or submit a feature request) if you find something missing.
