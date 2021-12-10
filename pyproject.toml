@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abuse_whois"
-version = "0.1.2"
+version = "0.1.3"
 description = "Find where to report a domain for abuse"
 authors = ["Manabu Niseki <manabu.niseki@gmail.com>"]
 license = "MIT"
@@ -11,6 +11,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.7"
 email-validator = "^1.1.3"
+importlib-metadata = {version = "^4.8.2", python = "<3.8"}
 pydantic = "^1.8.2"
 pyhumps = "^3.0.2"
 PyYAML = "^6.0"
