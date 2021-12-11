@@ -32,7 +32,7 @@ pip install abuse_whois[api]
 ### As a library
 
 ```python
-from abuse_whois import get_get_abuse_contacts
+from abuse_whois import get_abuse_contacts
 
 get_abuse_contacts("1.1.1.1")
 get_abuse_contacts("github.com")
