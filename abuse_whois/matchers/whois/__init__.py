@@ -38,7 +38,19 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Optional[Contact]:
 
     if email is None:
         # fallback to regexp based search
-        return get_whois_abuse_contact_by_regexp(record)
+        contact = get_whois_abuse_contact_by_regexp(record)
+        if contact is None:
+            return None
+
+        provider = contact.provider
+        email = contact.address
+
+    # use email's domain as a provider
+    if is_email(provider or ""):
+        provider = email.split("@")[-1]
+
+    if provider is None or email is None:
+        return None
 
     return Contact(provider=provider, address=email)
 
