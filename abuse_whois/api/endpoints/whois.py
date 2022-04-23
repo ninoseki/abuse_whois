@@ -7,9 +7,9 @@ router = APIRouter(prefix="/whois")
 
 
 @router.post("/", response_model=schemas.Contacts)
-def whois(query: schemas.Query):
+async def whois(query: schemas.Query):
     try:
-        return get_abuse_contacts(query.address)
+        return await get_abuse_contacts(query.address)
     except InvalidAddressError as e:
         raise HTTPException(400, detail=str(e))
     except TimeoutError as e:

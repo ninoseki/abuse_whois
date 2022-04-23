@@ -16,6 +16,7 @@ def test_version():
         ("foo@test.com", "test.com"),
     ],
 )
-def test_get_abuse_contacts(address: str, hostname: str):
-    contacts = get_abuse_contacts(address)
+@pytest.mark.asyncio
+async def test_get_abuse_contacts(address: str, hostname: str):
+    contacts = await get_abuse_contacts(address)
     assert contacts.hostname == hostname

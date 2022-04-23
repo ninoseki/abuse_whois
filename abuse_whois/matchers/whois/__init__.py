@@ -55,17 +55,17 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Optional[Contact]:
     return Contact(provider=provider, address=email)
 
 
-def get_contact_from_whois(
+async def get_contact_from_whois(
     hostname: str,
 ) -> Optional[Contact]:
     rules = load_rules()
     for rule in rules:
-        if rule.match(hostname):
+        if await rule.match(hostname):
             return rule.contact
 
     # Use whois registrar & abuse data
     try:
-        whois_record = get_whois_record(hostname)
+        whois_record = await get_whois_record(hostname)
     except Exception:
         return None
 
