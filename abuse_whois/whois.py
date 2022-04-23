@@ -16,12 +16,12 @@ warnings.filterwarnings(
 )
 
 
-@functools.lru_cache()
+@functools.lru_cache(maxsize=1)
 def get_whois_command() -> sh.Command:
     return sh.Command("whois")
 
 
-@functools.lru_cache()
+@functools.lru_cache(maxsize=1)
 def get_whois_parser() -> WhoisParser:
     return WhoisParser()
 

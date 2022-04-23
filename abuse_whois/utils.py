@@ -9,13 +9,13 @@ from pydantic import BaseModel, ValidationError
 from pydantic.networks import AnyHttpUrl
 
 
-class UrlModel(BaseModel):
+class URLModel(BaseModel):
     url: AnyHttpUrl
 
 
 def is_ip_address(v: str) -> bool:
     try:
-        model = UrlModel(url=f"http://{v}")
+        model = URLModel(url=f"http://{v}")
         return model.url.host_type in ["ipv4", "ipv6"]
     except ValidationError:
         return False
@@ -29,7 +29,7 @@ def is_domain(v: str) -> bool:
         return False
 
     try:
-        model = UrlModel(url=f"http://{v}")
+        model = URLModel(url=f"http://{v}")
         return model.url.host_type in ["domain", "int_domain"]
     except ValidationError:
         return False
@@ -40,7 +40,7 @@ def is_url(v: str) -> bool:
         return False
 
     try:
-        UrlModel(url=v)
+        URLModel(url=v)
         return True
     except ValidationError:
         return False
