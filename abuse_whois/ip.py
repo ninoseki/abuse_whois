@@ -16,9 +16,7 @@ def socket_with_timeout(timeout: float):
         socket.setdefaulttimeout(timeout)
         yield socket
     except (socket.timeout, ValueError):
-        raise TimeoutError(
-            f"{settings.WHOIS_TIMEOUT} seconds have passed but there is no response"
-        )
+        raise TimeoutError(f"{timeout} seconds have passed but there is no response")
     finally:
         socket.setdefaulttimeout(old_timeout)
 

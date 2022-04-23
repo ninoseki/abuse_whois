@@ -45,9 +45,7 @@ def _get_whois_record(
     try:
         result = cast(sh.RunningCommand, whois(hostname, _timeout=timeout))
     except sh.TimeoutException:
-        raise TimeoutError(
-            f"{settings.WHOIS_TIMEOUT} seconds have passed but there is no response"
-        )
+        raise TimeoutError(f"{timeout} seconds have passed but there is no response")
 
     whois_text = str(result)
 
