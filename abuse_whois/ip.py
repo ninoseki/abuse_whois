@@ -1,6 +1,8 @@
 import socket
 from contextlib import contextmanager
 
+from asyncer import asyncify
+
 from . import settings
 from .errors import TimeoutError
 
@@ -20,7 +22,10 @@ def socket_with_timeout(timeout: float):
         socket.setdefaulttimeout(old_timeout)
 
 
-def resolve_ip_address(hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT) -> str:
+def _resolve_ip_address(hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT) -> str:
     with socket_with_timeout(float(timeout)):
         ip = socket.gethostbyname(hostname)
         return ip
+
+
+resolve_ip_address = asyncify(_resolve_ip_address)

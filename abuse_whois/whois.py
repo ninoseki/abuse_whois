@@ -3,6 +3,7 @@ import warnings
 from typing import cast
 
 import sh
+from asyncer import asyncify
 from cachetools import TTLCache, cached
 from whois_parser import WhoisParser
 from whois_parser.dataclasses import WhoisRecord
@@ -34,7 +35,7 @@ def get_whois_parser() -> WhoisParser:
         maxsize=settings.WHOIS_RECORD_CACHE_SIZE, ttl=settings.WHOIS_RECORD_CACHE_TTL
     )
 )
-def get_whois_record(
+def _get_whois_record(
     hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT
 ) -> WhoisRecord:
     if not is_ip_address(hostname):
@@ -52,3 +53,6 @@ def get_whois_record(
 
     parser = get_whois_parser()
     return parser.parse(whois_text, hostname=hostname)
+
+
+get_whois_record = asyncify(_get_whois_record)

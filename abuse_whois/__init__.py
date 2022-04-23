@@ -17,7 +17,7 @@ except ModuleNotFoundError:
 __version__ = importlib_metadata.version(__name__)
 
 
-def get_abuse_contacts(address: str) -> Contacts:
+async def get_abuse_contacts(address: str) -> Contacts:
     if not is_supported_address(address):
         raise InvalidAddressError(f"{address} is not supported type address")
 
@@ -31,11 +31,11 @@ def get_abuse_contacts(address: str) -> Contacts:
     shared_hosting_provider = get_shared_hosting_provider(hostname)
 
     if is_domain(hostname):
-        registrar = get_contact_from_whois(hostname)
+        registrar = await get_contact_from_whois(hostname)
 
         # get IP address by domain
         try:
-            ip_address = resolve_ip_address(hostname)
+            ip_address = await resolve_ip_address(hostname)
         except OSError:
             pass
 
@@ -43,7 +43,7 @@ def get_abuse_contacts(address: str) -> Contacts:
         ip_address = hostname
 
     if ip_address is not None:
-        hosting_provider = get_contact_from_whois(ip_address)
+        hosting_provider = await get_contact_from_whois(ip_address)
 
     return Contacts(
         address=address,

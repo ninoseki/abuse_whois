@@ -8,9 +8,9 @@ class WhoisRule(BaseRule):
     contact: Contact
     keywords: List[str]
 
-    def match(self, hostname: str) -> bool:
+    async def match(self, hostname: str) -> bool:
         try:
-            whois_record = get_whois_record(hostname)
+            whois_record = await get_whois_record(hostname)
         except Exception:
             return False
 

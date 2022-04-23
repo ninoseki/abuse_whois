@@ -1,5 +1,3 @@
-from typing import Optional
-
 from .api_model import APIModel
 from .contact import Contact
 
@@ -7,5 +5,5 @@ from .contact import Contact
 class BaseRule(APIModel):
     contact: Contact
 
-    def match(self, hostname: str) -> Optional[Contact]:
+    async def match(self, hostname: str) -> bool:
         raise NotImplementedError()
