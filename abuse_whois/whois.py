@@ -32,11 +32,11 @@ def get_whois_parser() -> WhoisParser:
 
 @cached(
     cache=TTLCache(
-        maxsize=settings.WHOIS_RECORD_CACHE_SIZE, ttl=settings.WHOIS_RECORD_CACHE_TTL
+        maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE, ttl=settings.WHOIS_LOOKUP_CACHE_TTL
     )
 )
 def _get_whois_record(
-    hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT
+    hostname: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT
 ) -> WhoisRecord:
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname

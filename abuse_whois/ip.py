@@ -25,10 +25,13 @@ def socket_with_timeout(timeout: float):
 
 @cached(
     cache=TTLCache(
-        maxsize=settings.WHOIS_RECORD_CACHE_SIZE, ttl=settings.WHOIS_RECORD_CACHE_TTL
+        maxsize=settings.IP_ADDRESS_LOOKUP_CACHE_SIZE,
+        ttl=settings.IP_ADDRESS_LOOKUP_CACHE_TTL,
     )
 )
-def _resolve_ip_address(hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT) -> str:
+def _resolve_ip_address(
+    hostname: str, *, timeout: int = settings.IP_ADDRESS_LOOKUP_TIMEOUT
+) -> str:
     with socket_with_timeout(float(timeout)):
         ip = socket.gethostbyname(hostname)
         return ip
