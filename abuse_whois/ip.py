@@ -2,6 +2,7 @@ import socket
 from contextlib import contextmanager
 
 from asyncer import asyncify
+from cachetools import TTLCache, cached
 
 from . import settings
 from .errors import TimeoutError
@@ -22,6 +23,11 @@ def socket_with_timeout(timeout: float):
         socket.setdefaulttimeout(old_timeout)
 
 
+@cached(
+    cache=TTLCache(
+        maxsize=settings.WHOIS_RECORD_CACHE_SIZE, ttl=settings.WHOIS_RECORD_CACHE_TTL
+    )
+)
 def _resolve_ip_address(hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT) -> str:
     with socket_with_timeout(float(timeout)):
         ip = socket.gethostbyname(hostname)
