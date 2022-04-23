@@ -3,9 +3,12 @@ import warnings
 from typing import cast
 
 import sh
+from cachetools import TTLCache, cached
 from whois_parser import WhoisParser
 from whois_parser.dataclasses import WhoisRecord
 
+from . import settings
+from .errors import TimeoutError
 from .utils import get_registered_domain, is_ip_address
 
 # Ignore dateparser warnings regarding pytz
@@ -26,13 +29,25 @@ def get_whois_parser() -> WhoisParser:
     return WhoisParser()
 
 
-@functools.lru_cache(maxsize=1024)
-def get_whois_record(hostname: str) -> WhoisRecord:
+@cached(
+    cache=TTLCache(
+        maxsize=settings.WHOIS_RECORD_CACHE_SIZE, ttl=settings.WHOIS_RECORD_CACHE_TTL
+    )
+)
+def get_whois_record(
+    hostname: str, *, timeout: int = settings.WHOIS_TIMEOUT
+) -> WhoisRecord:
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname
 
     whois = get_whois_command()
-    result = cast(sh.RunningCommand, whois(hostname))
+    try:
+        result = cast(sh.RunningCommand, whois(hostname, _timeout=timeout))
+    except sh.TimeoutException:
+        raise TimeoutError(
+            f"{settings.WHOIS_TIMEOUT} seconds have passed but there is no response"
+        )
+
     whois_text = str(result)
 
     parser = get_whois_parser()

@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from loguru import logger
 
-from . import settings
+from abuse_whois import settings
+
 from .endpoints import index, whois
 
 
