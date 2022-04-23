@@ -1,10 +1,10 @@
-import socket
 from typing import Optional
 
 from abuse_whois.matchers.shared_hosting import get_shared_hosting_provider
 from abuse_whois.matchers.whois import get_contact_from_whois
 
 from .errors import InvalidAddressError
+from .ip import resolve_ip_address
 from .schemas import Contact, Contacts
 from .utils import get_hostname, is_domain, is_ip_address, is_supported_address
 
@@ -35,7 +35,7 @@ def get_abuse_contacts(address: str) -> Contacts:
 
         # get IP address by domain
         try:
-            ip_address = socket.gethostbyname(hostname)
+            ip_address = resolve_ip_address(hostname)
         except OSError:
             pass
 
