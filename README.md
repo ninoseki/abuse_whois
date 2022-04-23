@@ -4,7 +4,7 @@
 [![Python CI](https://github.com/ninoseki/abuse_whois/actions/workflows/test.yml/badge.svg)](https://github.com/ninoseki/abuse_whois/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/abuse_whois/badge.svg?branch=main)](https://coveralls.io/github/ninoseki/abuse_whois?branch=main)
 
-Yet another way to find where to report a domain for abuse.
+Yet another way to find where to report an abuse.
 
 ![img](./images/overview.jpg)
 
@@ -85,6 +85,20 @@ $ http localhost:8000/api/whois/ address=https://github.com
     "sharedHostingProvider": null
 }
 ```
+
+## Settings
+
+All settings can be done via environment variables or `.env` file.
+
+| Name                         | Type | Default | Desc.                                           |
+|------------------------------|------|---------|-------------------------------------------------|
+| WHOIS_LOOKUP_TIMEOUT         | int  | 10      | Timeout value for whois lookup (seconds)        |
+| WHOIS_LOOKUP_CACHE_SIZE      | int  | 1024    | Cache size for whois lookup                     |
+| WHOIS_LOOKUP_CACHE_TTL       | int  | 3600    | Cache TTL value for whois lookup (seconds)      |
+| IP_ADDRESS_LOOKUP_TIMEOUT    | int  | 10      | Timeout value for IP address lookup (seconds)   |
+| IP_ADDRESS_LOOKUP_CACHE_SIZE | int  | 1024    | Cache size for IP address lookup                |
+| IP_ADDRESS_LOOKUP_CACHE_TTL  | int  | 3600    | Cache TTL value for IP address lookup (seconds) |
+
 
 ## Contributions
 

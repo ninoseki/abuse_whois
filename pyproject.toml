@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abuse_whois"
-version = "0.1.4"
+version = "0.2.0"
 description = "Find where to report a domain for abuse"
 authors = ["Manabu Niseki <manabu.niseki@gmail.com>"]
 license = "MIT"
@@ -42,7 +42,7 @@ pytest-sugar = "^0.9.4"
 pyupgrade = "^2.32.0"
 
 [tool.poetry.extras]
-api = ["fastapi", "loguru", "uvicorn"]
+api = ["uvicorn"]
 
 [tool.poetry.scripts]
 abuse_whois = "abuse_whois.cli:app"
