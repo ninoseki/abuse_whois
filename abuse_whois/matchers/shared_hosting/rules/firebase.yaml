@@ -1,0 +1,6 @@
+contact:
+  provider: FireBase
+  address: firebase-removals@google.com
+base_domains:
+  - web.app
+  - firebaseapp.com
