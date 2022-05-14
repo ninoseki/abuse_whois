@@ -11,5 +11,5 @@ async def test_base_domains_matching():
         base_domains=["example.com"],
     )
 
-    assert await test.match("http://example.com") is True
-    assert await test.match("http://foo.example.com") is True
+    assert await test.match("example.com") is True
+    assert await test.match("foo.example.com") is True

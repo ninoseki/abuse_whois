@@ -3,7 +3,7 @@ from typing import List
 from pydantic import Field
 
 from abuse_whois.schemas import BaseRule, Contact
-from abuse_whois.utils import get_registered_domain
+from abuse_whois.utils import is_included_in_base_domains
 from abuse_whois.whois import get_whois_record
 
 
@@ -13,8 +13,7 @@ class WhoisRule(BaseRule):
     base_domains: List[str] = Field(default_factory=list)
 
     async def match(self, hostname: str) -> bool:
-        registered_domain = get_registered_domain(hostname)
-        if registered_domain in self.base_domains:
+        if is_included_in_base_domains(self.base_domains, hostname):
             return True
 
         try:
