@@ -86,6 +86,15 @@ $ http localhost:8000/api/whois/ address=https://github.com
 }
 ```
 
+### With Docker
+
+```bash
+git clone https://github.com/ninoseki/abuse_whois
+cd abuse_whois
+docker build . -t abuse-whois
+docker run -i -d -p 8000:8000 abuse-whois
+```
+
 ## Settings
 
 All settings can be done via environment variables or `.env` file.
@@ -98,7 +107,6 @@ All settings can be done via environment variables or `.env` file.
 | IP_ADDRESS_LOOKUP_TIMEOUT    | int  | 10      | Timeout value for IP address lookup (seconds)   |
 | IP_ADDRESS_LOOKUP_CACHE_SIZE | int  | 1024    | Cache size for IP address lookup                |
 | IP_ADDRESS_LOOKUP_CACHE_TTL  | int  | 3600    | Cache TTL value for IP address lookup (seconds) |
-
 
 ## Contributions
 
