@@ -4,3 +4,4 @@ contact:
 base_domains:
   - web.app
   - firebaseapp.com
+  - firebasestorage.googleapis.com
