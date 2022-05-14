@@ -1,0 +1,7 @@
+contact:
+  provider: Firebase
+  address: firebase-removals@google.com
+base_domains: # ref. https://firebase.google.com/docs/hosting
+  - web.app
+  - firebaseapp.com
+  - firebasestorage.googleapis.com
