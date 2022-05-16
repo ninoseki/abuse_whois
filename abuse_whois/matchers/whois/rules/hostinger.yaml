@@ -3,3 +3,5 @@ contact:
   address: abuse@hostinger.com
 keywords:
   - "netname:        HOSTING-SERVERS"
+base_domains:
+  - preview-domain.com
