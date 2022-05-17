@@ -3,3 +3,4 @@ contact:
   address: https://bitly.is/reporting-abuse
 base_domains:
   - bit.ly
+  - bitly.com
