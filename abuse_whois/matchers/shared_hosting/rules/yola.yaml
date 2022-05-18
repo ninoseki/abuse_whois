@@ -1,5 +1,5 @@
 contact:
-  provider: Bitly
-  address: https://bitly.is/reporting-abuse
-base_domains:
-  - bit.ly
+  provider: Yola
+  address: https://helpcenter.yola.com/hc/en-us/requests/new?ticket_form_id=360001504300
+base_domains: # ref: https://www.yola.com/features/domains
+  - yolasite.com
