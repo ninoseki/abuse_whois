@@ -2,6 +2,5 @@ contact:
   provider: Hostinger
   address: abuse@hostinger.com
 keywords:
-  - "netname:        HOSTING-SERVERS"
-base_domains:
-  - preview-domain.com
+  - "Registrar URL: https://www.hostinger.com"
+  - "abuse@hostinger.com"
