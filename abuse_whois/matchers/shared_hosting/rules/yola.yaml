@@ -1,5 +1,5 @@
 contact:
   provider: Yola
-  address: abuse@yola.com
+  address: https://helpcenter.yola.com/hc/en-us/requests/new?ticket_form_id=360001504300
 base_domains: # ref: https://www.yola.com/features/domains
   - yolasite.com
