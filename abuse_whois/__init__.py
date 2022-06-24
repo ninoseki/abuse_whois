@@ -6,7 +6,13 @@ from abuse_whois.matchers.whois import get_contact_from_whois
 from .errors import InvalidAddressError
 from .ip import resolve_ip_address
 from .schemas import Contact, Contacts
-from .utils import get_hostname, is_domain, is_ip_address, is_supported_address
+from .utils import (
+    get_hostname,
+    get_registered_domain,
+    is_domain,
+    is_ip_address,
+    is_supported_address,
+)
 
 try:
     import importlib.metadata as importlib_metadata
@@ -27,10 +33,12 @@ async def get_abuse_contacts(address: str) -> Contacts:
 
     hostname = get_hostname(address)
     ip_address: Optional[str] = None
+    registered_domain: Optional[str] = None
 
     shared_hosting_provider = get_shared_hosting_provider(hostname)
 
     if is_domain(hostname):
+        registered_domain = get_registered_domain(hostname)
         registrar = await get_contact_from_whois(hostname)
 
         # get IP address by domain
@@ -49,6 +57,7 @@ async def get_abuse_contacts(address: str) -> Contacts:
         address=address,
         hostname=hostname,
         ip_address=ip_address,
+        registered_domain=registered_domain,
         shared_hosting_provider=shared_hosting_provider,
         registrar=registrar,
         hosting_provider=hosting_provider,
