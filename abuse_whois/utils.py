@@ -1,4 +1,5 @@
 import pathlib
+from functools import lru_cache
 from typing import Dict, List, Optional, Union, cast
 from urllib.parse import urlparse
 
@@ -7,6 +8,8 @@ import yaml
 from email_validator import EmailNotValidError, validate_email
 from pydantic import BaseModel, ValidationError
 from pydantic.networks import AnyHttpUrl
+
+from abuse_whois import settings
 
 
 class URLModel(BaseModel):
@@ -61,6 +64,7 @@ def is_supported_address(v: str) -> bool:
     return False
 
 
+@lru_cache(maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE)
 def get_registered_domain(v: str) -> Optional[str]:
     parsed = tldextract.extract(v)
 
