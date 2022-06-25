@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import List, Optional, Union
+
+from pydantic import Field
 
 from .api_model import APIModel
 
@@ -24,8 +26,8 @@ class WhoisRecord(APIModel):
     registrant: Contact
     abuse: Abuse
 
-    statuses: list[str]
-    name_servers: list[str]
+    statuses: List[str] = Field(default_factory=list)
+    name_servers: List[str] = Field(default_factory=list)
 
     domain: Optional[str] = None
     registrar: Optional[str] = None
