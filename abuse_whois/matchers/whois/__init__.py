@@ -1,9 +1,7 @@
 import re
 from typing import Optional, Pattern
 
-from whois_parser.dataclasses import WhoisRecord
-
-from abuse_whois.schemas import Contact
+from abuse_whois.schemas import Contact, WhoisRecord
 from abuse_whois.utils import is_email
 from abuse_whois.whois import get_whois_record
 

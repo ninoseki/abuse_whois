@@ -6,9 +6,9 @@ import aiometer
 from abuse_whois.matchers.shared_hosting import get_shared_hosting_provider
 from abuse_whois.matchers.whois import get_contact_from_whois
 
-from .errors import InvalidAddressError
+from .errors import InvalidAddressError, TimeoutError
 from .ip import resolve_ip_address
-from .schemas import Contact, Contacts
+from .schemas import Contact, Contacts, WhoisRecord
 from .utils import (
     get_hostname,
     get_registered_domain,
@@ -16,6 +16,14 @@ from .utils import (
     is_ip_address,
     is_supported_address,
 )
+from .whois import get_whois_record as _get_whois_record
+
+
+async def get_whois_record(hostname: str) -> Optional[WhoisRecord]:
+    try:
+        return await _get_whois_record(hostname)
+    except TimeoutError:
+        return None
 
 
 async def get_contact(domain_or_ip_address: Optional[str] = None) -> Optional[Contact]:
@@ -45,6 +53,7 @@ async def get_abuse_contacts(address: str) -> Contacts:
     domain: Optional[str] = None  # FQDN
     ip_address: Optional[str] = None
     registered_domain: Optional[str] = None
+    whois_record: Optional[WhoisRecord] = None
 
     shared_hosting_provider = get_shared_hosting_provider(hostname)
 
@@ -65,6 +74,9 @@ async def get_abuse_contacts(address: str) -> Contacts:
         domain=domain, ip_address=ip_address
     )
 
+    # it will get cached result (if there is no TimeoutError)
+    whois_record = await get_whois_record(hostname)
+
     return Contacts(
         address=address,
         hostname=hostname,
@@ -73,4 +85,5 @@ async def get_abuse_contacts(address: str) -> Contacts:
         shared_hosting_provider=shared_hosting_provider,
         registrar=registrar,
         hosting_provider=hosting_provider,
+        whois_record=whois_record,
     )

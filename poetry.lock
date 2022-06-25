@@ -29,6 +29,17 @@ test = ["coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "pytest (>=7.0)", "pytes
 trio = ["trio (>=0.16)"]
 
 [[package]]
+name = "asyncache"
+version = "0.1.1"
+description = "Helpers to use cachetools with async functions"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+cachetools = ">=2.1"
+
+[[package]]
 name = "asyncer"
 version = "0.0.1"
 description = "Asyncer, async and await, focused on developer experience."
@@ -795,14 +806,6 @@ requests = ">=1.0.0"
 six = "*"
 
 [[package]]
-name = "sh"
-version = "1.14.2"
-description = "Python subprocess replacement"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1079,7 +1082,7 @@ api = ["uvicorn", "gunicorn"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "4362f4e97c3820dd121d580e93c6be12d4daf12d27e9ee765cb930cd3c5634f2"
+content-hash = "2a87fd3eb485ae82f623b5f7fa02baaec42e5b35e08ad714fd85fcf282ab8aa5"
 
 [metadata.files]
 aiometer = [
@@ -1089,6 +1092,9 @@ aiometer = [
 anyio = [
     {file = "anyio-3.6.1-py3-none-any.whl", hash = "sha256:cb29b9c70620506a9a8f87a309591713446953302d7d995344d0d7c6c0c9a7be"},
     {file = "anyio-3.6.1.tar.gz", hash = "sha256:413adf95f93886e442aea925f3ee43baa5a765a64a0f52c6081894f9992fdd0b"},
+]
+asyncache = [
+    {file = "asyncache-0.1.1.tar.gz", hash = "sha256:c741b3ccef2c5291b3da05d97bab3cc8d50f2ac8efd7fd79d47e3d7b6a3774de"},
 ]
 asyncer = [
     {file = "asyncer-0.0.1-py3-none-any.whl", hash = "sha256:ca96270cfb5cd3b9c3180bcbce00cacc05ba9d642ed9887f4f2ce87e225cdc2a"},
@@ -1601,10 +1607,6 @@ requests = [
 requests-file = [
     {file = "requests-file-1.5.1.tar.gz", hash = "sha256:07d74208d3389d01c38ab89ef403af0cfec63957d53a0081d8eca738d0247d8e"},
     {file = "requests_file-1.5.1-py2.py3-none-any.whl", hash = "sha256:dfe5dae75c12481f68ba353183c53a65e6044c923e64c24b2209f6c7570ca953"},
-]
-sh = [
-    {file = "sh-1.14.2-py2.py3-none-any.whl", hash = "sha256:4921ac9c1a77ec8084bdfaf152fe14138e2b3557cc740002c1a97076321fce8a"},
-    {file = "sh-1.14.2.tar.gz", hash = "sha256:9d7bd0334d494b2a4609fe521b2107438cdb21c0e469ffeeb191489883d6fe0d"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
