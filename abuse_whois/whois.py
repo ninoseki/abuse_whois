@@ -1,14 +1,13 @@
+import asyncio
 import functools
+import shlex
 import warnings
-from typing import cast
 
-import sh
-from asyncer import asyncify
-from cachetools import TTLCache, cached
+from asyncache import cached
+from cachetools import TTLCache
 from whois_parser import WhoisParser
-from whois_parser.dataclasses import WhoisRecord
 
-from . import settings
+from . import schemas, settings
 from .errors import TimeoutError
 from .utils import get_registered_domain, is_ip_address
 
@@ -21,13 +20,15 @@ warnings.filterwarnings(
 
 
 @functools.lru_cache(maxsize=1)
-def get_whois_command() -> sh.Command:
-    return sh.Command("whois")
-
-
-@functools.lru_cache(maxsize=1)
 def get_whois_parser() -> WhoisParser:
     return WhoisParser()
+
+
+def parse(raw_text: str, hostname: str) -> schemas.WhoisRecord:
+    parser = get_whois_parser()
+    record = parser.parse(raw_text, hostname=hostname)
+
+    return schemas.WhoisRecord.parse_obj(record.to_dict())
 
 
 @cached(
@@ -35,22 +36,26 @@ def get_whois_parser() -> WhoisParser:
         maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE, ttl=settings.WHOIS_LOOKUP_CACHE_TTL
     )
 )
-def _get_whois_record(
+async def get_whois_record(
     hostname: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT
-) -> WhoisRecord:
+) -> schemas.WhoisRecord:
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname
 
-    whois = get_whois_command()
+    # open a new process for "whois" command
+    cmd = f"whois {shlex.quote(hostname)}"
+    proc = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+
     try:
-        result = cast(sh.RunningCommand, whois(hostname, _timeout=timeout))
-    except sh.TimeoutException:
+        # block for query_result
+        query_result_, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        query_result = query_result_.decode(errors="ignore")
+        query_result = query_result.strip()
+    except asyncio.TimeoutError:
         raise TimeoutError(f"{timeout} seconds have passed but there is no response")
 
-    whois_text = str(result)
-
-    parser = get_whois_parser()
-    return parser.parse(whois_text, hostname=hostname)
-
-
-get_whois_record = asyncify(_get_whois_record)
+    return parse(query_result, hostname)

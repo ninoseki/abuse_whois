@@ -1,5 +1,7 @@
 from typing import Any, Optional
 
+from abuse_whois.schemas.whois import WhoisRecord
+
 try:
     from typing import Literal
 except ImportError:
@@ -43,3 +45,7 @@ class Contacts(APIModel):
     )
     registrar: Optional[Contact] = Field(None, description="Registrar")
     hosting_provider: Optional[Contact] = Field(None, description="Hosting provider")
+
+    whois_record: Optional[WhoisRecord] = Field(
+        None, description="Whois record of hostname"
+    )
