@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Pattern
+from re import Pattern
 
 from abuse_whois.schemas import Contact, WhoisRecord
 from abuse_whois.utils import is_email
@@ -10,7 +10,7 @@ from .rules import load_rules
 
 def get_whois_abuse_contact_by_regexp(
     record: WhoisRecord, *, abuse_email_pattern: Pattern = r"abuse@[a-z0-9\-.]+"
-) -> Optional[Contact]:
+) -> Contact | None:
     provider = record.registrar or ""
 
     matches = re.findall(abuse_email_pattern, record.raw_text)
@@ -26,9 +26,9 @@ def get_whois_abuse_contact_by_regexp(
     return None
 
 
-def get_whois_abuse_contact(record: WhoisRecord) -> Optional[Contact]:
+def get_whois_abuse_contact(record: WhoisRecord) -> Contact | None:
     provider = record.registrar
-    email: Optional[str] = None
+    email: str | None = None
 
     # check email format for just in case
     if is_email(record.abuse.email or ""):
@@ -55,7 +55,7 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Optional[Contact]:
 
 async def get_contact_from_whois(
     hostname: str,
-) -> Optional[Contact]:
+) -> Contact | None:
     rules = load_rules()
     for rule in rules:
         if await rule.match(hostname):

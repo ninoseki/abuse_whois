@@ -1,11 +1,11 @@
-from typing import Any, Optional
+from typing import Any
 
 from abuse_whois.schemas.whois import WhoisRecord
 
 try:
     from typing import Literal
 except ImportError:
-    from typing_extensions import Literal
+    from typing import Literal
 
 from pydantic import Field
 
@@ -35,17 +35,17 @@ class Contacts(APIModel):
     address: str
     hostname: str = Field(..., description="Host name")
 
-    ip_address: Optional[str] = Field(None, description="IP address")
-    registered_domain: Optional[str] = Field(
+    ip_address: str | None = Field(None, description="IP address")
+    registered_domain: str | None = Field(
         None, description="Registered domain (a.k.a. free level domain)"
     )
 
-    shared_hosting_provider: Optional[Contact] = Field(
+    shared_hosting_provider: Contact | None = Field(
         None, description="Shared hosting provider"
     )
-    registrar: Optional[Contact] = Field(None, description="Registrar")
-    hosting_provider: Optional[Contact] = Field(None, description="Hosting provider")
+    registrar: Contact | None = Field(None, description="Registrar")
+    hosting_provider: Contact | None = Field(None, description="Hosting provider")
 
-    whois_record: Optional[WhoisRecord] = Field(
+    whois_record: WhoisRecord | None = Field(
         None, description="Whois record of hostname"
     )

@@ -1,6 +1,6 @@
 import pathlib
 from functools import lru_cache
-from typing import Dict, List, Optional, Union, cast
+from typing import cast
 from urllib.parse import urlparse
 
 import tldextract
@@ -65,7 +65,7 @@ def is_supported_address(v: str) -> bool:
 
 
 @lru_cache(maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE)
-def get_registered_domain(v: str) -> Optional[str]:
+def get_registered_domain(v: str) -> str | None:
     parsed = tldextract.extract(v)
 
     if parsed.registered_domain == "":
@@ -85,12 +85,12 @@ def get_hostname(value: str) -> str:
     return parsed.hostname or value
 
 
-def load_yaml(path: Union[str, pathlib.Path]) -> Dict:
+def load_yaml(path: str | pathlib.Path) -> dict:
     with open(path) as f:
-        return cast(Dict, yaml.safe_load(f))
+        return cast(dict, yaml.safe_load(f))
 
 
-def is_included_in_base_domains(base_domains: List[str], hostname: str) -> bool:
+def is_included_in_base_domains(base_domains: list[str], hostname: str) -> bool:
     if hostname in base_domains:
         return True
 

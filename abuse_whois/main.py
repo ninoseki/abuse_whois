@@ -1,5 +1,4 @@
 from functools import partial
-from typing import Optional
 
 import aiometer
 
@@ -19,14 +18,14 @@ from .utils import (
 from .whois import get_whois_record as _get_whois_record
 
 
-async def get_whois_record(hostname: str) -> Optional[WhoisRecord]:
+async def get_whois_record(hostname: str) -> WhoisRecord | None:
     try:
         return await _get_whois_record(hostname)
     except TimeoutError:
         return None
 
 
-async def get_contact(domain_or_ip_address: Optional[str] = None) -> Optional[Contact]:
+async def get_contact(domain_or_ip_address: str | None = None) -> Contact | None:
     if domain_or_ip_address is None:
         return None
 
@@ -34,7 +33,7 @@ async def get_contact(domain_or_ip_address: Optional[str] = None) -> Optional[Co
 
 
 async def get_registrar_and_hosting_provider_contacts(
-    *, domain: Optional[str] = None, ip_address: Optional[str] = None
+    *, domain: str | None = None, ip_address: str | None = None
 ):
     values = [domain, ip_address]
     return await aiometer.run_all([partial(get_contact, value) for value in values])
@@ -44,16 +43,16 @@ async def get_abuse_contacts(address: str) -> Contacts:
     if not is_supported_address(address):
         raise InvalidAddressError(f"{address} is not supported type address")
 
-    shared_hosting_provider: Optional[Contact] = None
-    registrar: Optional[Contact] = None
-    hosting_provider: Optional[Contact] = None
+    shared_hosting_provider: Contact | None = None
+    registrar: Contact | None = None
+    hosting_provider: Contact | None = None
 
     hostname = get_hostname(address)
 
-    domain: Optional[str] = None  # FQDN
-    ip_address: Optional[str] = None
-    registered_domain: Optional[str] = None
-    whois_record: Optional[WhoisRecord] = None
+    domain: str | None = None  # FQDN
+    ip_address: str | None = None
+    registered_domain: str | None = None
+    whois_record: WhoisRecord | None = None
 
     shared_hosting_provider = get_shared_hosting_provider(hostname)
 
