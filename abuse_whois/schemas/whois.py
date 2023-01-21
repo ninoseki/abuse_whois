@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional, Union
 
 from pydantic import Field
 
@@ -7,15 +6,15 @@ from .api_model import APIModel
 
 
 class Contact(APIModel):
-    organization: Optional[str] = None
-    email: Optional[str] = None
-    name: Optional[str] = None
-    telephone: Optional[str] = None
+    organization: str | None = None
+    email: str | None = None
+    name: str | None = None
+    telephone: str | None = None
 
 
 class Abuse(APIModel):
-    email: Optional[str] = None
-    telephone: Optional[str] = None
+    email: str | None = None
+    telephone: str | None = None
 
 
 class WhoisRecord(APIModel):
@@ -26,12 +25,12 @@ class WhoisRecord(APIModel):
     registrant: Contact
     abuse: Abuse
 
-    statuses: List[str] = Field(default_factory=list)
-    name_servers: List[str] = Field(default_factory=list)
+    statuses: list[str] = Field(default_factory=list)
+    name_servers: list[str] = Field(default_factory=list)
 
-    domain: Optional[str] = None
-    registrar: Optional[str] = None
+    domain: str | None = None
+    registrar: str | None = None
 
-    expires_at: Optional[Union[datetime, str]] = None
-    registered_at: Optional[Union[datetime, str]] = None
-    updated_at: Optional[Union[datetime, str]] = None
+    expires_at: datetime | str | None = None
+    registered_at: datetime | str | None = None
+    updated_at: datetime | str | None = None

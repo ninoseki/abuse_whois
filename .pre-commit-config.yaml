@@ -1,6 +1,6 @@
 repos:
-  - repo: https://github.com/humitos/mirrors-autoflake
-    rev: v1.3
+  - repo: https://github.com/pycqa/autoflake
+    rev: v2.0.0
     hooks:
       - id: autoflake
         args:
@@ -11,20 +11,20 @@ repos:
           ]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
-        args: [--py37-plus]
+        args: [--py310-plus]
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 4.0.1
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-print]
         args: ["--ignore=E501,W503,E203"]
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.10.1
+    rev: 5.11.4
     hooks:
       - id: isort
         additional_dependencies: [toml]
@@ -32,6 +32,6 @@ repos:
         args: ["--profile", "black"]
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.12.0
     hooks:
       - id: black

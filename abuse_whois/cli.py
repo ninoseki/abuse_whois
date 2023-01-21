@@ -16,9 +16,9 @@ def whois(
 ):
     try:
         contacts = anyio.run(partial(get_abuse_contacts, address))
-        print(contacts.json(by_alias=True))  # noqa: T001
+        print(contacts.json(by_alias=True))  # noqa: T201
     except (InvalidAddressError, TimeoutError) as e:
-        print(json.dumps({"error": str(e)}))  # noqa: T001
+        print(json.dumps({"error": str(e)}))  # noqa: T201
 
 
 if __name__ == "__main__":

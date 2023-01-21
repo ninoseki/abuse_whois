@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import Field
 
 from abuse_whois.schemas import BaseRule, Contact
@@ -9,8 +7,8 @@ from abuse_whois.whois import get_whois_record
 
 class WhoisRule(BaseRule):
     contact: Contact
-    keywords: List[str] = Field(default_factory=list)
-    base_domains: List[str] = Field(default_factory=list)
+    keywords: list[str] = Field(default_factory=list)
+    base_domains: list[str] = Field(default_factory=list)
 
     async def match(self, hostname: str) -> bool:
         if is_included_in_base_domains(self.base_domains, hostname):
