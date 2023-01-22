@@ -3,5 +3,9 @@ description: A shard hosting rule for Telegram
 contact:
   provider: Telegram
   address: abuse@telegram.org
-base_domains:
-  - telegram.me
+detection:
+  selection:
+    domain|endswith:
+      - .telegram.me
+      - telegram.me
+  condition: selection

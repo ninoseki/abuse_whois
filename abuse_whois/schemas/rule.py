@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import Field, root_validator
+from pydantic import root_validator
 
 from abuse_whois.pysigma import schemas
 from abuse_whois.pysigma.factories import RuleFactory
@@ -13,10 +13,9 @@ from .contact import Contact
 class BaseRule(APIModel):
     title: str
     description: str
-    detection: Any | None = Field(default=None)
+    detection: Any
 
     contact: Contact
-    base_domains: list[str] = Field(default_factory=list)
 
     @root_validator
     def validate_detection(cls, values: dict[str, Any]):

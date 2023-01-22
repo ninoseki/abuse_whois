@@ -3,5 +3,8 @@ description: A shard hosting rule for Square
 contact:
   provider: Square
   address: spoof@squareup.com
-base_domains:
-  - square.site
+detection:
+  selection:
+    domain|endswith:
+      - .square.site
+  condition: selection

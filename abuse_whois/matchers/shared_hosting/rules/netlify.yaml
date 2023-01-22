@@ -3,5 +3,8 @@ description: A shard hosting rule for Netlify
 contact:
   provider: Netlify
   address: fraud@netlify.com
-base_domains:
-  - netlify.app
+detection:
+  selection:
+    domain|endswith:
+      - .netlify.app
+  condition: selection

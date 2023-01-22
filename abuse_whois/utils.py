@@ -88,14 +88,3 @@ def get_hostname(value: str) -> str:
 def load_yaml(path: str | pathlib.Path) -> dict:
     with open(path) as f:
         return cast(dict, yaml.safe_load(f))
-
-
-def is_included_in_base_domains(base_domains: list[str], hostname: str) -> bool:
-    if hostname in base_domains:
-        return True
-
-    for base_domain in base_domains:
-        if hostname.endswith(f".{base_domain}"):
-            return True
-
-    return False

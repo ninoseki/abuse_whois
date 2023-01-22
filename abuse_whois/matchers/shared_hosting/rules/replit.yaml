@@ -3,5 +3,8 @@ description: A shard hosting rule for Replit
 contact:
   provider: Replit
   address: contact@repl.it
-base_domains:
-  - repl.co
+detection:
+  selection:
+    domain|endswith:
+      - .repl.co
+  condition: selection

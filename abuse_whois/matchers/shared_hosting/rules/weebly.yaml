@@ -3,5 +3,8 @@ description: A shard hosting rule for Weebly
 contact:
   provider: Weebly
   address: https://www.weebly.com/uk/spam
-base_domains:
-  - weebly.com
+detection:
+  selection:
+    domain|endswith:
+      - .weebly.com
+  condition: selection

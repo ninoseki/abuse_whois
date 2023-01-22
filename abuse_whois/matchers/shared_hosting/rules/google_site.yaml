@@ -3,5 +3,9 @@ description: A shard hosting rule for Google Sites
 contact:
   provider: Google Sites
   address: https://support.google.com/docs/answer/2463296?hl=en-GB#zippy=%2Cgoogle-sites
-base_domains:
-  - sites.google.com
+detection:
+  selection:
+    domain|endswith:
+      - .sites.google.com
+      - sites.google.com
+  condition: selection
