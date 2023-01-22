@@ -19,10 +19,6 @@ class BaseRule(APIModel):
 
     @root_validator
     def validate_detection(cls, values: dict[str, Any]):
-        detection = values.get("detection")
-        if detection is None:
-            return values
-
         validator = SigmaValidator(values)
         if len(validator.file_errors) > 0:
             raise ValueError(validator.file_errors)
