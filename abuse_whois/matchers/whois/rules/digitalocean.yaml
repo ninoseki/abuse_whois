@@ -1,3 +1,5 @@
+title: DigitalOcean
+description: A whois rule for DigitalOcean
 contact:
   provider: DigitalOcean
   address: https://www.digitalocean.com/company/contact/#abuse

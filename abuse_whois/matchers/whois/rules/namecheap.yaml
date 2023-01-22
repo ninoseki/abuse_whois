@@ -1,3 +1,5 @@
+title: Namecheap
+description: A whois rule for Namecheap
 contact:
   provider: Namecheap
   address: https://support.namecheap.com/index.php?/Tickets/Submit

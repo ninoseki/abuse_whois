@@ -1,3 +1,5 @@
+title: No-IP
+description: A whois rule for No-IP
 contact:
   provider: No-IP
   address: https://www.noip.com/abuse

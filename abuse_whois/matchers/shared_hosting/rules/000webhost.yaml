@@ -1,3 +1,5 @@
+title: 000webhost
+description: A shard hosting rule for 000webhost
 contact:
   provider: 000webhost
   address: https://www.000webhost.com/report-abuse

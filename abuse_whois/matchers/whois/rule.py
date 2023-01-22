@@ -14,9 +14,9 @@ class WhoisRule(BaseRule):
         except Exception:
             return False
 
-        rule = self.to_sigma_rule()
-        if rule is None:
+        sigma_rule = self.sigma_rule
+        if sigma_rule is None:
             return False
 
-        alerts = check_event(whois_record.dict(by_alias=True), rule)
+        alerts = check_event(whois_record.dict(by_alias=True), sigma_rule)
         return len(alerts) > 0

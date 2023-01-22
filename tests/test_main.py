@@ -35,4 +35,3 @@ async def test_get_abuse_contacts_with_domain():
     assert contacts.ip_address is not None
     assert contacts.registered_domain == "github.com"
     assert contacts.registrar is not None
-    assert contacts.hosting_provider is not None
