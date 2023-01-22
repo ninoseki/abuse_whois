@@ -1,0 +1,46 @@
+{
+  "rawText": "% IANA WHOIS server\n% for more information on IANA, visit http://www.iana.org\n% This query returned 1 object\n\nrefer:        whois.verisign-grs.com\n\ndomain:       COM\n\norganisation: VeriSign Global Registry Services\naddress:      12061 Bluemont Way\naddress:      Reston VA 20190\naddress:      United States of America (the)\n\ncontact:      administrative\nname:         Registry Customer Service\norganisation: VeriSign Global Registry Services\naddress:      12061 Bluemont Way\naddress:      Reston VA 20190\naddress:      United States of America (the)\nphone:        +1 703 925-6999\nfax-no:       +1 703 948 3978\ne-mail:       info@verisign-grs.com\n\ncontact:      technical\nname:         Registry Customer Service\norganisation: VeriSign Global Registry Services\naddress:      12061 Bluemont Way\naddress:      Reston VA 20190\naddress:      United States of America (the)\nphone:        +1 703 925-6999\nfax-no:       +1 703 948 3978\ne-mail:       info@verisign-grs.com\n\nnserver:      A.GTLD-SERVERS.NET 192.5.6.30 2001:503:a83e:0:0:0:2:30\nnserver:      B.GTLD-SERVERS.NET 192.33.14.30 2001:503:231d:0:0:0:2:30\nnserver:      C.GTLD-SERVERS.NET 192.26.92.30 2001:503:83eb:0:0:0:0:30\nnserver:      D.GTLD-SERVERS.NET 192.31.80.30 2001:500:856e:0:0:0:0:30\nnserver:      E.GTLD-SERVERS.NET 192.12.94.30 2001:502:1ca1:0:0:0:0:30\nnserver:      F.GTLD-SERVERS.NET 192.35.51.30 2001:503:d414:0:0:0:0:30\nnserver:      G.GTLD-SERVERS.NET 192.42.93.30 2001:503:eea3:0:0:0:0:30\nnserver:      H.GTLD-SERVERS.NET 192.54.112.30 2001:502:8cc:0:0:0:0:30\nnserver:      I.GTLD-SERVERS.NET 192.43.172.30 2001:503:39c1:0:0:0:0:30\nnserver:      J.GTLD-SERVERS.NET 192.48.79.30 2001:502:7094:0:0:0:0:30\nnserver:      K.GTLD-SERVERS.NET 192.52.178.30 2001:503:d2d:0:0:0:0:30\nnserver:      L.GTLD-SERVERS.NET 192.41.162.30 2001:500:d937:0:0:0:0:30\nnserver:      M.GTLD-SERVERS.NET 192.55.83.30 2001:501:b1f9:0:0:0:0:30\nds-rdata:     30909 8 2 e2d3c916f6deeac73294e8268fb5885044a833fc5459588f4a9184cfc41a5766\n\nwhois:        whois.verisign-grs.com\n\nstatus:       ACTIVE\nremarks:      Registration information: http://www.verisigninc.com\n\ncreated:      1985-01-01\nchanged:      2019-08-14\nsource:       IANA\n\n# whois.verisign-grs.com\n\n   Domain Name: GODADDY.COM\r\n   Registry Domain ID: 4013247_DOMAIN_COM-VRSN\r\n   Registrar WHOIS Server: whois.godaddy.com\r\n   Registrar URL: http://www.godaddy.com\r\n   Updated Date: 2022-10-04T21:38:54Z\r\n   Creation Date: 1999-03-02T05:00:00Z\r\n   Registry Expiry Date: 2024-11-01T11:59:59Z\r\n   Registrar: GoDaddy.com, LLC\r\n   Registrar IANA ID: 146\r\n   Registrar Abuse Contact Email: abuse@godaddy.com\r\n   Registrar Abuse Contact Phone: 480-624-2505\r\n   Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited\r\n   Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited\r\n   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited\r\n   Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited\r\n   Domain Status: serverDeleteProhibited https://icann.org/epp#serverDeleteProhibited\r\n   Domain Status: serverTransferProhibited https://icann.org/epp#serverTransferProhibited\r\n   Domain Status: serverUpdateProhibited https://icann.org/epp#serverUpdateProhibited\r\n   Name Server: A1-245.AKAM.NET\r\n   Name Server: A11-64.AKAM.NET\r\n   Name Server: A20-65.AKAM.NET\r\n   Name Server: A6-66.AKAM.NET\r\n   Name Server: A8-67.AKAM.NET\r\n   Name Server: A9-67.AKAM.NET\r\n   Name Server: CNS1.GODADDY.COM\r\n   Name Server: CNS2.GODADDY.COM\r\n   DNSSEC: unsigned\r\n   URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/\r\n>>> Last update of whois database: 2023-01-21T23:37:19Z <<<\r\n\n# whois.godaddy.com\n\nDomain Name: GODADDY.COM\r\nRegistry Domain ID: 4013247_DOMAIN_COM-VRSN\r\nRegistrar WHOIS Server: whois.godaddy.com\r\nRegistrar URL: https://www.godaddy.com\r\nUpdated Date: 2022-10-04T16:04:14Z\r\nCreation Date: 1999-03-02T00:00:00Z\r\nRegistrar Registration Expiration Date: 2024-11-01T06:59:59Z\r\nRegistrar: GoDaddy.com, LLC\r\nRegistrar IANA ID: 146\r\nRegistrar Abuse Contact Email: abuse@godaddy.com\r\nRegistrar Abuse Contact Phone: +1.4806242505\r\nDomain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited\r\nDomain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited\r\nDomain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited\r\nDomain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited\r\nRegistry Registrant ID: Not Available From Registry\r\nRegistrant Name: Registration Private\r\nRegistrant Organization: Domains By Proxy, LLC\r\nRegistrant Street: DomainsByProxy.com\r\nRegistrant Street: 2155 E Warner Rd\r\nRegistrant City: Tempe\r\nRegistrant State/Province: Arizona\r\nRegistrant Postal Code: 85284\r\nRegistrant Country: US\r\nRegistrant Phone: +1.4806242599\r\nRegistrant Phone Ext:\r\nRegistrant Fax: +1.4806242598\r\nRegistrant Fax Ext:\r\nRegistrant Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM\r\nRegistry Admin ID: Not Available From Registry\r\nAdmin Name: Registration Private\r\nAdmin Organization: Domains By Proxy, LLC\r\nAdmin Street: DomainsByProxy.com\r\nAdmin Street: 2155 E Warner Rd\r\nAdmin City: Tempe\r\nAdmin State/Province: Arizona\r\nAdmin Postal Code: 85284\r\nAdmin Country: US\r\nAdmin Phone: +1.4806242599\r\nAdmin Phone Ext:\r\nAdmin Fax: +1.4806242598\r\nAdmin Fax Ext:\r\nAdmin Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM\r\nRegistry Tech ID: Not Available From Registry\r\nTech Name: Registration Private\r\nTech Organization: Domains By Proxy, LLC\r\nTech Street: DomainsByProxy.com\r\nTech Street: 2155 E Warner Rd\r\nTech City: Tempe\r\nTech State/Province: Arizona\r\nTech Postal Code: 85284\r\nTech Country: US\r\nTech Phone: +1.4806242599\r\nTech Phone Ext:\r\nTech Fax: +1.4806242598\r\nTech Fax Ext:\r\nTech Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM\r\nName Server: CNS1.GODADDY.COM\r\nName Server: CNS2.GODADDY.COM\r\nName Server: A11-64.AKAM.NET\r\nName Server: A1-245.AKAM.NET\r\nName Server: A20-65.AKAM.NET\r\nName Server: A6-66.AKAM.NET\r\nName Server: A8-67.AKAM.NET\r\nName Server: A9-67.AKAM.NET\r\nDNSSEC: unsigned\r\nURL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/\r\n>>> Last update of WHOIS database: 2023-01-21T23:37:40Z <<<",
+  "tech": {
+    "organization": "Domains By Proxy, LLC",
+    "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM",
+    "name": "Registration Private",
+    "telephone": "+1.4806242599"
+  },
+  "admin": {
+    "organization": "Domains By Proxy, LLC",
+    "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM",
+    "name": "Registration Private",
+    "telephone": "+1.4806242599"
+  },
+  "registrant": {
+    "organization": "Domains By Proxy, LLC",
+    "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=GODADDY.COM",
+    "name": "Registration Private",
+    "telephone": "+1.4806242599"
+  },
+  "abuse": {
+    "email": "abuse@godaddy.com",
+    "telephone": "+1.4806242505"
+  },
+  "statuses": [
+    "clientTransferProhibited https://icann.org/epp#clientTransferProhibited",
+    "clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited",
+    "clientRenewProhibited https://icann.org/epp#clientRenewProhibited",
+    "clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited"
+  ],
+  "nameServers": [
+    "cns1.godaddy.com",
+    "cns2.godaddy.com",
+    "a11-64.akam.net",
+    "a1-245.akam.net",
+    "a20-65.akam.net",
+    "a6-66.akam.net",
+    "a8-67.akam.net",
+    "a9-67.akam.net"
+  ],
+  "domain": "godaddy.com",
+  "registrar": "GoDaddy.com, LLC",
+  "expiresAt": "2024-11-01T06:59:59+00:00",
+  "registeredAt": "1999-03-02T00:00:00+00:00",
+  "updatedAt": "2022-10-04T16:04:14+00:00"
+}

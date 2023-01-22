@@ -1,6 +1,9 @@
 contact:
   provider: DigitalOcean
   address: https://www.digitalocean.com/company/contact/#abuse
-keywords:
-  - "descr:          Digital Ocean, Inc."
-  - abuse@digitalocean.com
+detection:
+  selection:
+    rawText|contains:
+      - "descr:          Digital Ocean, Inc."
+      - abuse@digitalocean.com
+  condition: selection

@@ -1,5 +1,8 @@
 contact:
   provider: Fran Tech
   address: https://my.frantech.ca/submitticket.php?step=2&deptid=21
-keywords:
-  - fdias@frantech.ca
+detection:
+  selection:
+    rawText|contains:
+      - fdias@frantech.ca
+  condition: selection

@@ -8,9 +8,5 @@ from .rule import WhoisRule
 
 @lru_cache(maxsize=1)
 def load_rules() -> list[WhoisRule]:
-    rules: list[WhoisRule] = []
-    for path in pathlib.Path(__file__).parent.glob("./rules/*.yaml"):
-        data = load_yaml(path)
-        rules.append(WhoisRule.parse_obj(data))
-
-    return rules
+    paths = pathlib.Path(__file__).parent.glob("./rules/*.yaml")
+    return [WhoisRule.parse_obj(load_yaml(path)) for path in paths]

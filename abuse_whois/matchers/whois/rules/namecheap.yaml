@@ -1,5 +1,8 @@
 contact:
   provider: Namecheap
   address: https://support.namecheap.com/index.php?/Tickets/Submit
-keywords:
-  - abuse@namecheap.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@namecheap.com
+  condition: selection

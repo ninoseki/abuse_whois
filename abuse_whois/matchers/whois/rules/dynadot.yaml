@@ -1,5 +1,8 @@
 contact:
   provider: Dynadot
   address: https://www.dynadot.com/report_abuse.html
-keywords:
-  - abuse@dynadot.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@dynadot.com
+  condition: selection

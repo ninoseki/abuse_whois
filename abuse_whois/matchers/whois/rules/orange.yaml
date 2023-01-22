@@ -1,5 +1,8 @@
 contact:
   provider: Orange
   address: abuse-dept@orangewebsite.com
-keywords:
-  - abuse@orangewebsite.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@orangewebsite.com
+  condition: selection

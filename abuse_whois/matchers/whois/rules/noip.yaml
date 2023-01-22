@@ -1,11 +1,6 @@
 contact:
   provider: No-IP
   address: https://www.noip.com/abuse
-keywords:
-  - whois.no-ip.com
-  - http://www.noip.com/whois/
-  - abuse@no-ip.com
-  - domains@no-ip.com
 base_domains: # ref. https://www.noip.com/support/faq/free-dynamic-dns-domains/
   - 3utilities.com
   - access.ly
@@ -98,3 +93,11 @@ base_domains: # ref. https://www.noip.com/support/faq/free-dynamic-dns-domains/
   - webhop.me
   - workisboring.com
   - zapto.org
+detection:
+  selection:
+    rawText|contains:
+      - whois.no-ip.com
+      - http://www.noip.com/whois/
+      - abuse@no-ip.com
+      - domains@no-ip.com
+  condition: selection

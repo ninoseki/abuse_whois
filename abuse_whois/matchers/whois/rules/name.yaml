@@ -1,5 +1,8 @@
 contact:
   provider: name.com
   address: https://www.name.com/abuse
-keywords:
-  - abuse@name.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@name.com
+  condition: selection

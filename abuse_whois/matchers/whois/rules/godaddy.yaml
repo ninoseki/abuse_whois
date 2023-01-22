@@ -1,5 +1,8 @@
 contact:
   provider: GoDaddy
   address: https://supportcenter.godaddy.com/AbuseReport
-keywords:
-  - abuse@godaddy.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@godaddy.com
+  condition: selection

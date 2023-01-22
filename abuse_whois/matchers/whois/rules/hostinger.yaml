@@ -1,6 +1,9 @@
 contact:
   provider: Hostinger
   address: abuse@hostinger.com
-keywords:
-  - "Registrar URL: https://www.hostinger.com"
-  - "abuse@hostinger.com"
+detection:
+  selection:
+    rawText|contains:
+      - "Registrar URL: https://www.hostinger.com"
+      - "abuse@hostinger.com"
+  condition: selection
