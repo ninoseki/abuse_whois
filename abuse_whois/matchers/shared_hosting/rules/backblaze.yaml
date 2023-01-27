@@ -1,5 +1,10 @@
+title: Backblaze
+description: A shard hosting rule for Backblaze
 contact:
   provider: Backblaze
   address: reportphishing@backblaze.com
-base_domains:
-  - backblazeb2.com
+detection:
+  selection:
+    domain|endswith:
+      - .backblazeb2.com
+  condition: selection

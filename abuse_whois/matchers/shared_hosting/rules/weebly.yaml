@@ -1,5 +1,10 @@
+title: Weebly
+description: A shard hosting rule for Weebly
 contact:
-  provider: Yola
-  address: https://helpcenter.yola.com/hc/en-us/requests/new?ticket_form_id=360001504300
-base_domains:
-  - yolasite.com
+  provider: Weebly
+  address: https://www.weebly.com/uk/spam
+detection:
+  selection:
+    domain|endswith:
+      - .weebly.com
+  condition: selection

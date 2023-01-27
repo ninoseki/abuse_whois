@@ -1,5 +1,10 @@
+title: Jimdo
+description: A shard hosting rule for Jimdo
 contact:
   provider: Jimdo
   address: https://jimdo-legal.zendesk.com/hc/en-us/requests/new?ticket_form_id=239123
-base_domains:
-  - jimdosite.com
+detection:
+  selection:
+    domain|endswith:
+      - .jimdosite.com
+  condition: selection

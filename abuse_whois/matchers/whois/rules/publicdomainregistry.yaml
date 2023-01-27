@@ -1,5 +1,10 @@
+title: PublicDomainRegistry
+description: A whois rule for PublicDomainRegistry
 contact:
   provider: PublicDomainRegistry
   address: https://publicdomainregistry.com/process-for-handling-abuse/
-keywords:
-  - abuse-contact@publicdomainregistry.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse-contact@publicdomainregistry.com
+  condition: selection

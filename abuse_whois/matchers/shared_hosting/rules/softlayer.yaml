@@ -1,5 +1,10 @@
+title: SoftLayer
+description: A shard hosting rule for SoftLayer
 contact:
   provider: SoftLayer
   address: abuse@softlayer.com
-base_domains:
-  - appdomain.cloud
+detection:
+  selection:
+    domain|endswith:
+      - .appdomain.cloud
+  condition: selection

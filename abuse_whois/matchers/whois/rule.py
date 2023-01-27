@@ -1,26 +1,23 @@
-from pydantic import Field
+from typing import Any
 
-from abuse_whois.schemas import BaseRule, Contact
-from abuse_whois.utils import is_included_in_base_domains
+from abuse_whois.pysigma.parser import check_event
+from abuse_whois.schemas import BaseRule
 from abuse_whois.whois import get_whois_record
 
 
 class WhoisRule(BaseRule):
-    contact: Contact
-    keywords: list[str] = Field(default_factory=list)
-    base_domains: list[str] = Field(default_factory=list)
-
     async def match(self, hostname: str) -> bool:
-        if is_included_in_base_domains(self.base_domains, hostname):
-            return True
+        data: dict[Any, Any] | None = None
 
         try:
             whois_record = await get_whois_record(hostname)
+            data = whois_record.dict(by_alias=True)
         except Exception:
+            data = {"domain": hostname}
+
+        sigma_rule = self.sigma_rule
+        if sigma_rule is None:
             return False
 
-        for keyword in self.keywords:
-            if keyword in whois_record.raw_text:
-                return True
-
-        return False
+        alerts = check_event(data, sigma_rule)
+        return len(alerts) > 0

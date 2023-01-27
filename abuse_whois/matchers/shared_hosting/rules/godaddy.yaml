@@ -1,5 +1,10 @@
+title: GoDaddy
+description: A shard hosting rule for GoDaddy
 contact:
   provider: GoDaddy
   address: https://supportcenter.godaddy.com/AbuseReport
-base_domains:
-  - godaddysites.com
+detection:
+  selection:
+    domain|endswith:
+      - .godaddysites.com
+  condition: selection

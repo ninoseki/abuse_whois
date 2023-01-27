@@ -1,5 +1,10 @@
+title: Registrar.eu
+description: A whois rule for Registrar.eu
 contact:
   provider: Registrar.eu
   address: https://abuse.registrar.eu
-keywords:
-  - abuse@registrar.eu
+detection:
+  selection:
+    rawText|contains:
+      - abuse@registrar.eu
+  condition: selection

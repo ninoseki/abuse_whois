@@ -1,5 +1,10 @@
+title: Namesilo
+description: A whois rule for Namesilo
 contact:
   provider: Namesilo
   address: https://www.namesilo.com/report_abuse.php or https://new.namesilo.com/phishing_report.php
-keywords:
-  - abuse@namesilo.com
+detection:
+  selection:
+    rawText|contains:
+      - abuse@namesilo.com
+  condition: selection

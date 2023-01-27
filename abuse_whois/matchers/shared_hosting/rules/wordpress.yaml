@@ -1,5 +1,10 @@
+title: WordPress
+description: A shared hosting rule for WordPress
 contact:
   provider: WordPress
   address: https://wordpress.com/abuse/
-base_domains:
-  - wordpress.com
+detection:
+  selection:
+    domain|endswith:
+      - .wordpress.com
+  condition: selection

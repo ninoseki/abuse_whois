@@ -1,5 +1,10 @@
+title: Microsoft
+description: A shard hosting rule for Microsoft
 contact:
   provider: Microsoft
   address: https://msrc.microsoft.com/report/abuse
-base_domains:
-  - blob.core.windows.net
+detection:
+  selection:
+    domain|endswith:
+      - .blob.core.windows.net
+  condition: selection

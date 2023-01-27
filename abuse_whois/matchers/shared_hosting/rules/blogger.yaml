@@ -1,6 +1,11 @@
+title: Blogger
+description: A shard hosting rule for Blogger
 contact:
   provider: Blogger
   address: https://support.google.com/blogger/answer/76315
-base_domains:
-  - blogger.com
-  - blogspot.com
+detection:
+  selection:
+    domain|endswith:
+      - .blogger.com
+      - .blogspot.com
+  condition: selection

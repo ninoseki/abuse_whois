@@ -1,5 +1,10 @@
+title: Adobe
+description: A shard hosting provider rule for Adobe
 contact:
   provider: Adobe
   address: hellospark@adobe.com
-base_domains:
-  - spark.adobe.com
+detection:
+  selection:
+    domain|endswith:
+      - .spark.adobe.com
+  condition: selection

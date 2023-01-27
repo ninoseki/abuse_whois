@@ -1,12 +1,13 @@
-from pydantic import Field
-
-from abuse_whois.schemas import BaseRule, Contact
-from abuse_whois.utils import is_included_in_base_domains
+from abuse_whois.pysigma.parser import check_event
+from abuse_whois.schemas import BaseRule
 
 
 class SharedHostingRule(BaseRule):
-    contact: Contact
-    base_domains: list[str] = Field(default_factory=list)
-
     def match(self, hostname: str) -> bool:
-        return is_included_in_base_domains(self.base_domains, hostname)
+        sigma_rule = self.sigma_rule
+        if sigma_rule is None:
+            return False
+
+        data = {"domain": hostname}
+        alerts = check_event(data, sigma_rule)
+        return len(alerts) > 0
