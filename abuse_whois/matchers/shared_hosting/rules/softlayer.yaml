@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .appdomain.cloud
   condition: selection
+logsource:
+  product: abuse_whois

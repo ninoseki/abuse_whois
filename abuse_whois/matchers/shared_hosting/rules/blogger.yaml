@@ -9,3 +9,5 @@ detection:
       - .blogger.com
       - .blogspot.com
   condition: selection
+logsource:
+  product: abuse_whois

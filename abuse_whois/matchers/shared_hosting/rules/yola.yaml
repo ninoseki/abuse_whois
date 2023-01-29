@@ -9,3 +9,5 @@ detection:
     domain|endswith: # ref: https://www.yola.com/features/domains
       - .yolasite.com
   condition: selection
+logsource:
+  product: abuse_whois

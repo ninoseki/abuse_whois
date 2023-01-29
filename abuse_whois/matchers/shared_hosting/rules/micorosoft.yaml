@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .blob.core.windows.net
   condition: selection
+logsource:
+  product: abuse_whois

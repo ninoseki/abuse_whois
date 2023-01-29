@@ -11,3 +11,5 @@ detection:
       - bit.ly
       - bitly.com
   condition: selection
+logsource:
+  product: abuse_whois

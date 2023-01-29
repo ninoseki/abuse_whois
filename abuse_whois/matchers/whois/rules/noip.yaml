@@ -104,3 +104,5 @@ detection:
       - workisboring.com
       - zapto.org
   condition: selection or subdomain
+logsource:
+  product: abuse_whois

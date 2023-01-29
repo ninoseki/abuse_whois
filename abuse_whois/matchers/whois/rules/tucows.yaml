@@ -9,3 +9,5 @@ detection:
       - abuse@tucows.com
       - domainabuse@tucows.com
   condition: selection
+logsource:
+  product: abuse_whois

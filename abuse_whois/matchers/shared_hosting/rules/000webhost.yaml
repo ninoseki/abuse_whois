@@ -9,3 +9,5 @@ detection:
       - .000webhost.com
       - .000webhostapp.com
   condition: selection
+logsource:
+  product: abuse_whois

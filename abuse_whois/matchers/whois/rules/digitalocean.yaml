@@ -9,3 +9,5 @@ detection:
       - "descr:          Digital Ocean, Inc."
       - abuse@digitalocean.com
   condition: selection
+logsource:
+  product: abuse_whois

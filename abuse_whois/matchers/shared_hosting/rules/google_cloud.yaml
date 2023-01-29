@@ -9,3 +9,5 @@ detection:
       - .appspot.com
       - .googleapis.com
   condition: selection
+logsource:
+  product: abuse_whois

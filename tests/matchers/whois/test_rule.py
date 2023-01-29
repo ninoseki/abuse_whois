@@ -3,7 +3,6 @@ import glob
 import pytest
 
 from abuse_whois.matchers.whois.rule import WhoisRule
-from abuse_whois.pysigma.parser import check_event
 from abuse_whois.schemas import WhoisRecord
 from abuse_whois.utils import load_yaml
 
@@ -28,9 +27,8 @@ def godaddy_whois_rule():
 
 
 def test_godaddy(godaddy_whois_record: WhoisRecord, godaddy_whois_rule: WhoisRule):
-    sigma_rule = godaddy_whois_rule.sigma_rule
-    alerts = check_event(godaddy_whois_record.dict(by_alias=True), sigma_rule)
-    assert len(alerts) > 0
-
-    alerts = check_event({}, sigma_rule)
-    assert len(alerts) == 0
+    condition = godaddy_whois_rule.detection_condition
+    assert (
+        condition(godaddy_whois_rule, godaddy_whois_record.dict(by_alias=True)) is True
+    )
+    assert condition(godaddy_whois_rule, {}) is False

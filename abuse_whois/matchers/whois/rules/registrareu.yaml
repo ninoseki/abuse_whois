@@ -8,3 +8,5 @@ detection:
     rawText|contains:
       - abuse@registrar.eu
   condition: selection
+logsource:
+  product: abuse_whois

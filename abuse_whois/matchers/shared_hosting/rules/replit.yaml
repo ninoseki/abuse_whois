@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .repl.co
   condition: selection
+logsource:
+  product: abuse_whois

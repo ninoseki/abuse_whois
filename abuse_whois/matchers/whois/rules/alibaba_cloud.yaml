@@ -11,3 +11,5 @@ detection:
       - domainabuse@service.aliyun.com
       - www.alibabacloud.com
   condition: selection
+logsource:
+  product: abuse_whois

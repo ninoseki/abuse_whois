@@ -11,3 +11,5 @@ detection:
       - notion.so
       - notion.com
   condition: selection
+logsource:
+  product: abuse_whois
