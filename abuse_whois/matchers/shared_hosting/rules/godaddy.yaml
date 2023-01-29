@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .godaddysites.com
   condition: selection
+logsource:
+  product: abuse_whois

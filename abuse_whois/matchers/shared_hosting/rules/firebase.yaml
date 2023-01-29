@@ -10,3 +10,5 @@ detection:
       - .firebaseapp.com
       - .firebasestorage.googleapis.com
   condition: selection
+logsource:
+  product: abuse_whois

@@ -8,3 +8,5 @@ detection:
     rawText|contains:
       - abuse-contact@publicdomainregistry.com
   condition: selection
+logsource:
+  product: abuse_whois

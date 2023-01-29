@@ -9,3 +9,5 @@ detection:
       - .glitch.me
       - .glitch.com
   condition: selection
+logsource:
+  product: abuse_whois

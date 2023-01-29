@@ -163,3 +163,5 @@ detection:
       - .changeip.co
       - .wwwhost.us
   condition: selection
+logsource:
+  product: abuse_whois

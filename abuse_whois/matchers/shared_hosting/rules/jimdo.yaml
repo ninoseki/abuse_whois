@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .jimdosite.com
   condition: selection
+logsource:
+  product: abuse_whois

@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .backblazeb2.com
   condition: selection
+logsource:
+  product: abuse_whois

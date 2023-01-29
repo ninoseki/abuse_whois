@@ -9,3 +9,5 @@ detection:
       - .telegram.me
       - telegram.me
   condition: selection
+logsource:
+  product: abuse_whois

@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .square.site
   condition: selection
+logsource:
+  product: abuse_whois

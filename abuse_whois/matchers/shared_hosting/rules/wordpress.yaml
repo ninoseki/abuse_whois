@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .wordpress.com
   condition: selection
+logsource:
+  product: abuse_whois

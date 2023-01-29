@@ -8,3 +8,5 @@ detection:
     rawText|contains:
       - abuse@namecheap.com
   condition: selection
+logsource:
+  product: abuse_whois

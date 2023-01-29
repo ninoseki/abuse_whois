@@ -118,6 +118,24 @@ pycodestyle = ">=2.10.0"
 tomli = {version = "*", markers = "python_version < \"3.11\""}
 
 [[package]]
+name = "azuma"
+version = "0.1.0"
+description = "Yet another Sigma library for Python"
+category = "main"
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "azuma-0.1.0-py3-none-any.whl", hash = "sha256:8453c7a21887800817276a3d911d993df0ae450a09f41e039249cb2803962d14"},
+    {file = "azuma-0.1.0.tar.gz", hash = "sha256:1e5d143240cdb896cb0af72e50bf1268fef306312357eb8109e102aa0266eef5"},
+]
+
+[package.dependencies]
+lark-parser = ">=0.12,<1.0"
+pydantic = ">=1.8,<2.0"
+pyyaml = ">=6.0,<7.0"
+regex = ">=2022"
+
+[[package]]
 name = "black"
 version = "22.12.0"
 description = "The uncompromising code formatter."
@@ -1852,4 +1870,4 @@ api = ["uvicorn", "gunicorn"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0776cd71316057e9e3b80a187fbb6f486765a117579cbe32f3fa819447fb9948"
+content-hash = "bc05b33c4b28ccad683c91d7d224a78cbf7f77d41cd79a8bbb779fc9f1dea0cf"

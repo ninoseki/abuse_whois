@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .weebly.com
   condition: selection
+logsource:
+  product: abuse_whois

@@ -8,3 +8,5 @@ detection:
     domain|endswith:
       - .workers.dev
   condition: selection
+logsource:
+  product: abuse_whois

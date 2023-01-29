@@ -9,3 +9,5 @@ detection:
       - "Registrar URL: https://www.hostinger.com"
       - "abuse@hostinger.com"
   condition: selection
+logsource:
+  product: abuse_whois
