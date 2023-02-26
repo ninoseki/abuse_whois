@@ -15,7 +15,7 @@ This tool is highly inspired from the following libraries:
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.10+
 - whois
 
 ## Installation
@@ -71,14 +71,17 @@ docker run -i -d -p 8000:8000 abuse-whois
 
 All settings can be done via environment variables or `.env` file.
 
-| Name                         | Type | Default | Desc.                                           |
-|------------------------------|------|---------|-------------------------------------------------|
-| WHOIS_LOOKUP_TIMEOUT         | int  | 10      | Timeout value for whois lookup (seconds)        |
-| WHOIS_LOOKUP_CACHE_SIZE      | int  | 1024    | Cache size for whois lookup                     |
-| WHOIS_LOOKUP_CACHE_TTL       | int  | 3600    | Cache TTL value for whois lookup (seconds)      |
-| IP_ADDRESS_LOOKUP_TIMEOUT    | int  | 10      | Timeout value for IP address lookup (seconds)   |
-| IP_ADDRESS_LOOKUP_CACHE_SIZE | int  | 1024    | Cache size for IP address lookup                |
-| IP_ADDRESS_LOOKUP_CACHE_TTL  | int  | 3600    | Cache TTL value for IP address lookup (seconds) |
+| Name                                       | Type                   | Default  | Desc.                                                    |
+| ------------------------------------------ | ---------------------- | -------- | -------------------------------------------------------- |
+| WHOIS_LOOKUP_TIMEOUT                       | int                    | 10       | Timeout value for whois lookup (seconds)                 |
+| WHOIS_LOOKUP_CACHE_SIZE                    | int                    | 1024     | Cache size for whois lookup                              |
+| WHOIS_LOOKUP_CACHE_TTL                     | int                    | 3600     | Cache TTL value for whois lookup (seconds)               |
+| IP_ADDRESS_LOOKUP_TIMEOUT                  | int                    | 10       | Timeout value for IP address lookup (seconds)            |
+| IP_ADDRESS_LOOKUP_CACHE_SIZE               | int                    | 1024     | Cache size for IP address lookup                         |
+| IP_ADDRESS_LOOKUP_CACHE_TTL                | int                    | 3600     | Cache TTL value for IP address lookup (seconds)          |
+| RULE_EXTENSIONS                            | CommaSeparatedStrings  | yaml,yml | Rule file extensions                                     |
+| ADDITIONAL_WHOIS_RULE_DIRECTORIES          | CommaSeparatedStrings] |          | Additional directories contain whois rule files          |
+| ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES | CommaSeparatedStrings] |          | Additional directories contain shared hosting rule files |
 
 ## Contributions
 
