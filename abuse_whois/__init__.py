@@ -1,5 +1,5 @@
-import importlib.metadata as importlib_metadata
+import importlib.metadata
 
 from .main import get_abuse_contacts  # noqa: F401
 
-__version__ = importlib_metadata.version(__name__)
+__version__ = importlib.metadata.version(__name__)
