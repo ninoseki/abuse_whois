@@ -1,6 +1,7 @@
 import sys
 
 from starlette.config import Config
+from starlette.datastructures import CommaSeparatedStrings
 
 config = Config(".env")
 
@@ -31,4 +32,16 @@ IP_ADDRESS_LOOKUP_CACHE_SIZE: int = config(
 )
 IP_ADDRESS_LOOKUP_CACHE_TTL: int = config(
     "IP_ADDRESS_LOOKUP_CACHE_TTL", cast=int, default=60 * 60
+)
+
+RULE_EXTENSIONS: CommaSeparatedStrings = config(
+    "RULE_EXTENSIONS", cast=CommaSeparatedStrings, default="yaml,yml"
+)
+
+ADDITIONAL_WHOIS_RULE_DIRECTORIES = config(
+    "ADDITIONAL_WHOIS_RULE_DIRECTORIES", cast=CommaSeparatedStrings, default=""
+)
+
+ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES: CommaSeparatedStrings = config(
+    "ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES", cast=CommaSeparatedStrings, default=""
 )

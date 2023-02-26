@@ -88,3 +88,22 @@ def get_hostname(value: str) -> str:
 def load_yaml(path: str | pathlib.Path) -> dict:
     with open(path) as f:
         return cast(dict, yaml.safe_load(f))
+
+
+def glob_rules(
+    base_directory: str | pathlib.Path,
+    *,
+    additional_directories: list[str | pathlib.Path],
+    rule_extensions=settings.RULE_EXTENSIONS,
+) -> list[pathlib.Path]:
+    directories = [base_directory]
+    directories.extend(additional_directories)
+
+    directories = [pathlib.Path(d) for d in directories]
+
+    paths: set[str] = set()
+    for directory in directories:
+        for extension in rule_extensions:
+            paths.update([str(p) for p in directory.glob(f"*.{extension}")])
+
+    return [pathlib.Path(p) for p in paths]
