@@ -10,7 +10,7 @@ class WhoisRule(BaseRule):
 
         try:
             whois_record = await get_whois_record(hostname)
-            data = whois_record.dict(by_alias=True)
+            data = whois_record.model_dump(by_alias=True)
         except Exception:
             data = {"domain": hostname}
 

@@ -1,27 +1,28 @@
 import pathlib
+from collections.abc import Callable
 from functools import lru_cache
 from typing import cast
 from urllib.parse import urlparse
 
 import tldextract
+import validators
 import yaml
-from email_validator import EmailNotValidError, validate_email
-from pydantic import BaseModel, ValidationError
-from pydantic.networks import AnyHttpUrl
+from starlette.datastructures import CommaSeparatedStrings
 
 from abuse_whois import settings
 
 
-class URLModel(BaseModel):
-    url: AnyHttpUrl
+def _is_x(v: str, *, validator: Callable[[str], bool]) -> bool:
+    res = validator(v)
+
+    if isinstance(res, validators.ValidationFailure):
+        return False
+
+    return res
 
 
 def is_ip_address(v: str) -> bool:
-    try:
-        model = URLModel(url=f"http://{v}")
-        return model.url.host_type in ["ipv4", "ipv6"]
-    except ValidationError:
-        return False
+    return _is_x(v, validator=validators.ipv4) or _is_x(v, validator=validators.ipv6)  # type: ignore
 
 
 def is_domain(v: str) -> bool:
@@ -31,30 +32,18 @@ def is_domain(v: str) -> bool:
     if "@" in v:
         return False
 
-    try:
-        model = URLModel(url=f"http://{v}")
-        return model.url.host_type in ["domain", "int_domain"]
-    except ValidationError:
-        return False
+    return _is_x(v, validator=validators.domain)  # type: ignore
 
 
 def is_url(v: str) -> bool:
     if not v.startswith(("http://", "https://")):
         return False
 
-    try:
-        URLModel(url=v)
-        return True
-    except ValidationError:
-        return False
+    return _is_x(v, validator=validators.url)  # type: ignore
 
 
 def is_email(v: str) -> bool:
-    try:
-        validate_email(v, check_deliverability=False)
-        return True
-    except EmailNotValidError:
-        return False
+    return _is_x(v, validator=validators.email)  # type: ignore
 
 
 def is_supported_address(v: str) -> bool:
@@ -93,7 +82,7 @@ def load_yaml(path: str | pathlib.Path) -> dict:
 def glob_rules(
     base_directory: str | pathlib.Path,
     *,
-    additional_directories: list[str | pathlib.Path],
+    additional_directories: list[str] | list[pathlib.Path] | CommaSeparatedStrings,
     rule_extensions=settings.RULE_EXTENSIONS,
 ) -> list[pathlib.Path]:
     directories = [base_directory]

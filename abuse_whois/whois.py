@@ -28,7 +28,7 @@ def parse(raw_text: str, hostname: str) -> schemas.WhoisRecord:
     parser = get_whois_parser()
     record = parser.parse(raw_text, hostname=hostname)
 
-    return schemas.WhoisRecord.parse_obj(record.to_dict())
+    return schemas.WhoisRecord.model_validate(record.to_dict())
 
 
 @cached(

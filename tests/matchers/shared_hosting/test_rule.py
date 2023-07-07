@@ -20,6 +20,6 @@ def bitly_rule():
 
 
 def test_bit_ly(bitly_rule: SharedHostingRule):
-    condition = bitly_rule.detection_condition
+    condition = bitly_rule.detection.condition
     assert condition(bitly_rule, {"domain": "bit.ly"}) is True
     assert condition(bitly_rule, {"domain": ""}) is False

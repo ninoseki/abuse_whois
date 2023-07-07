@@ -15,4 +15,4 @@ def load_rules() -> list[SharedHostingRule]:
         DEFAULT_RULE_DIRECTORY,
         additional_directories=settings.ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES,
     )
-    return [SharedHostingRule.parse_obj(load_yaml(path)) for path in paths]
+    return [SharedHostingRule.model_validate(load_yaml(path)) for path in paths]
