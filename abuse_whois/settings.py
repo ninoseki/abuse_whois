@@ -38,7 +38,7 @@ RULE_EXTENSIONS: CommaSeparatedStrings = config(
     "RULE_EXTENSIONS", cast=CommaSeparatedStrings, default="yaml,yml"
 )
 
-ADDITIONAL_WHOIS_RULE_DIRECTORIES = config(
+ADDITIONAL_WHOIS_RULE_DIRECTORIES: CommaSeparatedStrings = config(
     "ADDITIONAL_WHOIS_RULE_DIRECTORIES", cast=CommaSeparatedStrings, default=""
 )
 

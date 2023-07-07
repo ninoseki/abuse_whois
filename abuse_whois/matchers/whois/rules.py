@@ -15,4 +15,4 @@ def load_rules() -> list[WhoisRule]:
         DEFAULT_RULE_DIRECTORY,
         additional_directories=settings.ADDITIONAL_WHOIS_RULE_DIRECTORIES,
     )
-    return [WhoisRule.parse_obj(load_yaml(path)) for path in paths]
+    return [WhoisRule.model_validate(load_yaml(path)) for path in paths]

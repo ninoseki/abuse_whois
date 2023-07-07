@@ -1,14 +1,8 @@
-from typing import Any
-
-from abuse_whois.schemas.whois import WhoisRecord
-
-try:
-    from typing import Literal
-except ImportError:
-    from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field
 
+from abuse_whois.schemas.whois import WhoisRecord
 from abuse_whois.utils import is_email, is_url
 
 from .api_model import APIModel

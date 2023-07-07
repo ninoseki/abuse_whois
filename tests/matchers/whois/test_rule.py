@@ -1,4 +1,5 @@
 import glob
+import json
 
 import pytest
 
@@ -11,24 +12,27 @@ paths = [p for p in glob.glob("abuse_whois/matchers/whois/rules/*.yaml")]
 
 @pytest.mark.parametrize("path", paths)
 def test_load_rules(path: str):
-    assert WhoisRule.parse_obj(load_yaml(path))
+    assert WhoisRule.model_validate(load_yaml(path))
 
 
 @pytest.fixture
 def godaddy_whois_record():
-    return WhoisRecord.parse_file("tests/fixtures/godaddy.com.json")
+    with open("tests/fixtures/godaddy.com.json") as f:
+        data = json.loads(f.read())
+        return WhoisRecord.model_validate(data)
 
 
 @pytest.fixture
 def godaddy_whois_rule():
-    return WhoisRule.parse_obj(
+    return WhoisRule.model_validate(
         load_yaml("abuse_whois/matchers/whois/rules/godaddy.yaml")
     )
 
 
 def test_godaddy(godaddy_whois_record: WhoisRecord, godaddy_whois_rule: WhoisRule):
-    condition = godaddy_whois_rule.detection_condition
+    condition = godaddy_whois_rule.detection.condition
     assert (
-        condition(godaddy_whois_rule, godaddy_whois_record.dict(by_alias=True)) is True
+        condition(godaddy_whois_rule, godaddy_whois_record.model_dump(by_alias=True))
+        is True
     )
     assert condition(godaddy_whois_rule, {}) is False
