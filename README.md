@@ -48,7 +48,7 @@ $ abuse_whois 1.1.1.1 | jq .
 ### As a REST API
 
 ```bash
-$ uvicorn abuse_whois.api.app:app
+$ uvicorn abuse_whois.api.main:app
 INFO:     Started server process [2283]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
