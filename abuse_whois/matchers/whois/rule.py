@@ -1,5 +1,5 @@
-from abuse_whois.schemas import BaseRule
-from abuse_whois.whois import get_whois_record
+from ...schemas import BaseRule
+from ...whois import get_whois_record
 
 
 class WhoisRule(BaseRule):
