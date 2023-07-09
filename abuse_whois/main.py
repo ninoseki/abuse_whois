@@ -1,7 +1,6 @@
 import asyncio
 import socket
 from contextlib import contextmanager
-from typing import ParamSpec, TypeVar
 
 from asyncer import asyncify
 from cachetools import TTLCache, cached
@@ -18,9 +17,6 @@ from .utils import (
     is_supported_address,
 )
 from .whois import get_whois_record
-
-P = ParamSpec("P")
-T = TypeVar("T")
 
 
 @contextmanager
