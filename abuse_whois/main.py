@@ -1,7 +1,9 @@
 import asyncio
+import json
 import socket
 from contextlib import contextmanager
 
+import typer
 from asyncer import asyncify
 from cachetools import TTLCache, cached
 
@@ -97,3 +99,21 @@ async def get_abuse_contacts(address: str) -> schemas.Contacts:
         hosting_provider=hosting_provider,
         whois_record=whois_record,
     )
+
+
+app = typer.Typer()
+
+
+@app.command()
+def whois(
+    address: str = typer.Argument(..., help="URL, domain, IP address or email address")
+):
+    try:
+        contacts = asyncio.run(get_abuse_contacts(address))
+        print(contacts.model_dump_json(by_alias=True))  # noqa: T201
+    except (InvalidAddressError, asyncio.TimeoutError) as e:
+        print(json.dumps({"error": str(e)}))  # noqa: T201
+
+
+if __name__ == "__main__":
+    app()

@@ -49,7 +49,7 @@ urllib3 = "1.26.16"
 api = ["uvicorn", "gunicorn"]
 
 [tool.poetry.scripts]
-abuse_whois = "abuse_whois.cli:app"
+abuse_whois = "abuse_whois.main:app"
 
 [tool.poetry-dynamic-versioning]
 enable = true
