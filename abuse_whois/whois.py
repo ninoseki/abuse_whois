@@ -1,8 +1,9 @@
 import asyncio
 import functools
 import shlex
-import warnings
+from dataclasses import asdict
 
+import stamina
 from asyncache import cached
 from cachetools import TTLCache
 from whois_parser import WhoisParser
@@ -10,13 +11,6 @@ from whois_parser import WhoisParser
 from . import schemas, settings
 from .errors import TimeoutError
 from .utils import get_registered_domain, is_ip_address
-
-# Ignore dateparser warnings regarding pytz
-# ref. https://github.com/scrapinghub/dateparser/issues/1013
-warnings.filterwarnings(
-    "ignore",
-    message="The localize method is no longer necessary, as this time zone supports the fold attribute",
-)
 
 
 @functools.lru_cache(maxsize=1)
@@ -28,9 +22,10 @@ def parse(raw_text: str, hostname: str) -> schemas.WhoisRecord:
     parser = get_whois_parser()
     record = parser.parse(raw_text, hostname=hostname)
 
-    return schemas.WhoisRecord.model_validate(record.to_dict())
+    return schemas.WhoisRecord.model_validate(asdict(record))
 
 
+@stamina.retry(on=TimeoutError, attempts=settings.WHOIS_LOOKUP_MAX_RETRIES)
 @cached(
     cache=TTLCache(
         maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE, ttl=settings.WHOIS_LOOKUP_CACHE_TTL
