@@ -1,13 +1,14 @@
-from functools import partial
+import asyncio
+import socket
+from contextlib import contextmanager
 
-import aiometer
+from asyncer import asyncify
+from cachetools import TTLCache, cached
 
-from abuse_whois.matchers.shared_hosting import get_shared_hosting_provider
-from abuse_whois.matchers.whois import get_contact_from_whois
-
-from .errors import InvalidAddressError, TimeoutError
-from .ip import resolve_ip_address
-from .schemas import Contact, Contacts, WhoisRecord
+from . import schemas, settings
+from .errors import InvalidAddressError
+from .matchers.shared_hosting import get_shared_hosting_provider
+from .matchers.whois import get_whois_contact
 from .utils import (
     get_hostname,
     get_registered_domain,
@@ -15,46 +16,56 @@ from .utils import (
     is_ip_address,
     is_supported_address,
 )
-from .whois import get_whois_record as _get_whois_record
+from .whois import get_whois_record
 
 
-async def get_whois_record(hostname: str) -> WhoisRecord | None:
+@contextmanager
+def with_socket_timeout(timeout: float):
+    old = socket.getdefaulttimeout()
     try:
-        return await _get_whois_record(hostname)
-    except TimeoutError:
+        socket.setdefaulttimeout(timeout)
+        yield
+    except (socket.timeout, ValueError):
+        raise asyncio.TimeoutError(
+            f"{timeout} seconds have passed but there is no response"
+        )
+    finally:
+        socket.setdefaulttimeout(old)
+
+
+@cached(
+    cache=TTLCache(
+        maxsize=settings.IP_ADDRESS_LOOKUP_CACHE_SIZE,
+        ttl=settings.IP_ADDRESS_LOOKUP_CACHE_TTL,
+    )
+)
+def _resolve(
+    hostname: str, *, timeout: float = float(settings.IP_ADDRESS_LOOKUP_TIMEOUT)
+) -> str:
+    with with_socket_timeout(timeout):
+        ip = socket.gethostbyname(hostname)
+        return ip
+
+
+resolve = asyncify(_resolve)
+
+
+async def get_contact(domain_or_ip: str | None):
+    if domain_or_ip is None:
         return None
 
-
-async def get_contact(domain_or_ip_address: str | None = None) -> Contact | None:
-    if domain_or_ip_address is None:
-        return None
-
-    return await get_contact_from_whois(domain_or_ip_address)
+    return await get_whois_contact(domain_or_ip)
 
 
-async def get_registrar_and_hosting_provider_contacts(
-    *, domain: str | None = None, ip_address: str | None = None
-):
-    values = [domain, ip_address]
-    return await aiometer.run_all([partial(get_contact, value) for value in values])
-
-
-async def get_abuse_contacts(address: str) -> Contacts:
+async def get_abuse_contacts(address: str) -> schemas.Contacts:
     if not is_supported_address(address):
         raise InvalidAddressError(f"{address} is not supported type address")
 
-    shared_hosting_provider: Contact | None = None
-    registrar: Contact | None = None
-    hosting_provider: Contact | None = None
+    hostname = get_hostname(address)  # Domain or IP address
 
-    hostname = get_hostname(address)
-
-    domain: str | None = None  # FQDN
+    domain: str | None = None
     ip_address: str | None = None
     registered_domain: str | None = None
-    whois_record: WhoisRecord | None = None
-
-    shared_hosting_provider = get_shared_hosting_provider(hostname)
 
     if is_domain(hostname):
         domain = hostname
@@ -62,21 +73,21 @@ async def get_abuse_contacts(address: str) -> Contacts:
 
         # get IP address by domain
         try:
-            ip_address = await resolve_ip_address(hostname)
+            ip_address = await resolve(hostname)
         except OSError:
             pass
 
     if is_ip_address(hostname):
         ip_address = hostname
 
-    registrar, hosting_provider = await get_registrar_and_hosting_provider_contacts(
-        domain=domain, ip_address=ip_address
+    whois_record = await get_whois_record(hostname)
+    shared_hosting_provider = get_shared_hosting_provider(hostname)
+
+    registrar, hosting_provider = await asyncio.gather(
+        get_contact(domain), get_contact(ip_address)
     )
 
-    # it will get cached result (if there is no TimeoutError)
-    whois_record = await get_whois_record(hostname)
-
-    return Contacts(
+    return schemas.Contacts(
         address=address,
         hostname=hostname,
         ip_address=ip_address,

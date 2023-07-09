@@ -16,7 +16,6 @@ This tool is highly inspired from the following libraries:
 ## Requirements
 
 - Python 3.10+
-- whois
 
 ## Installation
 
@@ -34,10 +33,10 @@ pip install abuse_whois[api]
 ```python
 from abuse_whois import get_abuse_contacts
 
-get_abuse_contacts("1.1.1.1")
-get_abuse_contacts("github.com")
-get_abuse_contacts("https://github.com")
-get_abuse_contacts("foo@example.com")
+await get_abuse_contacts("1.1.1.1")
+await get_abuse_contacts("github.com")
+await get_abuse_contacts("https://github.com")
+await get_abuse_contacts("foo@example.com")
 ```
 
 ### As a CLI tool

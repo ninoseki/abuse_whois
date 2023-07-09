@@ -23,9 +23,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
 
-      - name: Install whois
-        run: sudo apt-get -yqq install whois
-
       - name: Install Python dependencies
         run: poetry install
 

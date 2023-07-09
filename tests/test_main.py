@@ -1,6 +1,15 @@
-import pytest
+import asyncio
 
-from abuse_whois.main import get_abuse_contacts
+import pytest
+from pytest_mock import MockerFixture
+
+from abuse_whois.main import get_abuse_contacts, resolve
+
+
+@pytest.mark.asyncio
+async def test_resolve_with_timeout(mocker: MockerFixture):
+    with pytest.raises(asyncio.TimeoutError):
+        assert await resolve("github.com", timeout=-1.0)
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,4 @@
 import re
-from re import Pattern
 
 from abuse_whois.schemas import Contact, WhoisRecord
 from abuse_whois.utils import is_email
@@ -9,19 +8,21 @@ from .rules import load_rules
 
 
 def get_whois_abuse_contact_by_regexp(
-    record: WhoisRecord, *, abuse_email_pattern: Pattern = r"abuse@[a-z0-9\-.]+"
-) -> Contact | None:
-    provider = record.registrar or ""
-
-    matches = re.findall(abuse_email_pattern, record.raw_text)
+    record: WhoisRecord,
+    *,
+    email_pattern: str = r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+"
+) -> str | None:
+    matches = re.findall(email_pattern, record.raw_text)
     if len(matches) == 0:
         return None
 
-    # returns the email address in the bottom
-    matches.reverse()
-    for match in matches:
-        if is_email(str(match)):
-            return Contact(provider=provider, address=str(match))
+    # returns the email address which contains "abuse"
+    emails = [str(match) for match in matches if is_email(str(match))]
+    emails.reverse()
+
+    for email in emails:
+        if "abuse" in email:
+            return email
 
     return None
 
@@ -36,15 +37,12 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Contact | None:
 
     if email is None:
         # fallback to regexp based search
-        contact = get_whois_abuse_contact_by_regexp(record)
-        if contact is None:
+        email = get_whois_abuse_contact_by_regexp(record)
+        if email is None:
             return None
 
-        provider = contact.provider
-        email = contact.address
-
-    # use email's domain as a provider
-    if is_email(provider or ""):
+    # use email's domain as a provider if provider is None
+    if provider is None and is_email(email or ""):
         provider = email.split("@")[-1]
 
     if provider is None or email is None:
@@ -53,7 +51,7 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Contact | None:
     return Contact(provider=provider, address=email)
 
 
-async def get_contact_from_whois(
+async def get_whois_contact(
     hostname: str,
 ) -> Contact | None:
     rules = load_rules()

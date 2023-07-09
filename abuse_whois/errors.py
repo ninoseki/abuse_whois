@@ -4,7 +4,3 @@ class AbuseWhoisError(Exception):
 
 class InvalidAddressError(AbuseWhoisError):
     pass
-
-
-class TimeoutError(AbuseWhoisError):
-    pass

@@ -1,31 +1,32 @@
 import asyncio
-import functools
-import shlex
 from dataclasses import asdict
 
 import stamina
 from asyncache import cached
+from asyncwhois.query import DomainQuery, NumberQuery
 from cachetools import TTLCache
 from whois_parser import WhoisParser
 
 from . import schemas, settings
-from .errors import TimeoutError
-from .utils import get_registered_domain, is_ip_address
+from .utils import get_registered_domain, is_domain, is_ip_address
+
+whois_parser = WhoisParser()
 
 
-@functools.lru_cache(maxsize=1)
-def get_whois_parser() -> WhoisParser:
-    return WhoisParser()
-
-
-def parse(raw_text: str, hostname: str) -> schemas.WhoisRecord:
-    parser = get_whois_parser()
+def parse(
+    raw_text: str, hostname: str, *, parser: WhoisParser = whois_parser
+) -> schemas.WhoisRecord:
     record = parser.parse(raw_text, hostname=hostname)
-
     return schemas.WhoisRecord.model_validate(asdict(record))
 
 
-@stamina.retry(on=TimeoutError, attempts=settings.WHOIS_LOOKUP_MAX_RETRIES)
+async def query(address: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT) -> str:
+    klass = DomainQuery if is_domain(address) else NumberQuery
+    query = await klass.new_aio(address, timeout=timeout)
+    return query.query_output
+
+
+@stamina.retry(on=asyncio.TimeoutError, attempts=settings.WHOIS_LOOKUP_MAX_RETRIES)
 @cached(
     cache=TTLCache(
         maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE, ttl=settings.WHOIS_LOOKUP_CACHE_TTL
@@ -37,20 +38,7 @@ async def get_whois_record(
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname
 
-    # open a new process for "whois" command
-    cmd = f"whois {shlex.quote(hostname)}"
-    proc = await asyncio.create_subprocess_shell(
-        cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-
-    try:
-        # block for query_result
-        query_result_, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
-        query_result = query_result_.decode(errors="ignore")
-        query_result = query_result.strip()
-    except asyncio.TimeoutError:
-        raise TimeoutError(f"{timeout} seconds have passed but there is no response")
+    query_result = await query(hostname, timeout=timeout)
+    query_result = "\n".join(query_result.splitlines())
 
     return parse(query_result, hostname)
