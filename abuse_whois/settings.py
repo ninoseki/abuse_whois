@@ -17,6 +17,7 @@ LOG_LEVEL: str = config("LOG_LEVEL", cast=str, default="DEBUG")
 LOG_BACKTRACE: bool = config("LOG_BACKTRACE", cast=bool, default=True)
 
 # Abuse Whois setting
+WHOIS_LOOKUP_MAX_RETRIES: int = config("WHOIS_LOOKUP_MAX_RETRIES", cast=int, default=3)
 WHOIS_LOOKUP_TIMEOUT: int = config("WHOIS_LOOKUP_TIMEOUT", cast=int, default=10)
 WHOIS_LOOKUP_CACHE_SIZE: int = config("WHOIS_LOOKUP_CACHE_SIZE", cast=int, default=1024)
 WHOIS_LOOKUP_CACHE_TTL: int = config(
