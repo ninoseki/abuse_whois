@@ -10,9 +10,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-aiometer = "^0.4"
 asyncache = "^0.3"
 asyncer = "^0.0"
+asyncwhois = "^1.0"
 azuma = "^0.2"
 cachetools = "^5.3"
 fastapi = "^0.100.0"

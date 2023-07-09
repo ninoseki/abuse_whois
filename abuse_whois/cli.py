@@ -1,3 +1,4 @@
+import asyncio
 import json
 from functools import partial
 
@@ -5,7 +6,7 @@ import anyio
 import typer
 
 from . import get_abuse_contacts
-from .errors import InvalidAddressError, TimeoutError
+from .errors import InvalidAddressError
 
 app = typer.Typer()
 
@@ -16,8 +17,8 @@ def whois(
 ):
     try:
         contacts = anyio.run(partial(get_abuse_contacts, address))
-        print(contacts.json(by_alias=True))  # noqa: T201
-    except (InvalidAddressError, TimeoutError) as e:
+        print(contacts.model_dump_json(by_alias=True))  # noqa: T201
+    except (InvalidAddressError, asyncio.TimeoutError) as e:
         print(json.dumps({"error": str(e)}))  # noqa: T201
 
 
