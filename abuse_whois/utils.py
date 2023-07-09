@@ -1,5 +1,8 @@
+import asyncio
 import pathlib
+import socket
 from collections.abc import Callable
+from contextlib import contextmanager
 from functools import lru_cache
 from typing import cast
 from urllib.parse import urlparse
@@ -7,9 +10,11 @@ from urllib.parse import urlparse
 import tldextract
 import validators
 import yaml
+from asyncer import asyncify
+from cachetools import TTLCache, cached
 from starlette.datastructures import CommaSeparatedStrings
 
-from abuse_whois import settings
+from . import settings
 
 
 def _is_x(v: str, *, validator: Callable[[str], bool]) -> bool:
@@ -72,6 +77,37 @@ def get_hostname(value: str) -> str:
 
     parsed = urlparse(value)
     return parsed.hostname or value
+
+
+@contextmanager
+def with_socket_timeout(timeout: float):
+    old = socket.getdefaulttimeout()
+    try:
+        socket.setdefaulttimeout(timeout)
+        yield
+    except (socket.timeout, ValueError):
+        raise asyncio.TimeoutError(
+            f"{timeout} seconds have passed but there is no response"
+        )
+    finally:
+        socket.setdefaulttimeout(old)
+
+
+@cached(
+    cache=TTLCache(
+        maxsize=settings.IP_ADDRESS_LOOKUP_CACHE_SIZE,
+        ttl=settings.IP_ADDRESS_LOOKUP_CACHE_TTL,
+    )
+)
+def _resolve(
+    hostname: str, *, timeout: float = float(settings.IP_ADDRESS_LOOKUP_TIMEOUT)
+) -> str:
+    with with_socket_timeout(timeout):
+        ip = socket.gethostbyname(hostname)
+        return ip
+
+
+resolve = asyncify(_resolve)
 
 
 def load_yaml(path: str | pathlib.Path) -> dict:

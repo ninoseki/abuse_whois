@@ -66,3 +66,10 @@ async def get_whois_contact(
         return None
 
     return get_whois_abuse_contact(whois_record)
+
+
+async def get_optional_whois_contact(hostname: str | None) -> Contact | None:
+    if hostname is None:
+        return None
+
+    return await get_whois_contact(hostname)

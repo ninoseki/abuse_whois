@@ -1,9 +1,8 @@
 import pathlib
 from functools import lru_cache
 
-from abuse_whois import settings
-from abuse_whois.utils import glob_rules, load_yaml
-
+from ... import settings
+from ...utils import glob_rules, load_yaml
 from .rule import WhoisRule
 
 DEFAULT_RULE_DIRECTORY: pathlib.Path = pathlib.Path(__file__).parent / "./rules"
