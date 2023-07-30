@@ -5,9 +5,10 @@ import stamina
 from asyncache import cached
 from asyncwhois.query import DomainQuery, NumberQuery
 from cachetools import TTLCache
-from whois_parser import WhoisParser
+from whois_parser import WhoisParser, WhoisRecord
 
 from . import schemas, settings
+from .errors import RateLimitError
 from .utils import get_registered_domain, is_domain, is_ip_address
 
 whois_parser = WhoisParser()
@@ -15,9 +16,8 @@ whois_parser = WhoisParser()
 
 def parse(
     raw_text: str, hostname: str, *, parser: WhoisParser = whois_parser
-) -> schemas.WhoisRecord:
-    record = parser.parse(raw_text, hostname=hostname)
-    return schemas.WhoisRecord.model_validate(asdict(record))
+) -> WhoisRecord:
+    return parser.parse(raw_text, hostname=hostname)
 
 
 async def query(address: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT) -> str:
@@ -41,4 +41,8 @@ async def get_whois_record(
     query_result = await query(hostname, timeout=timeout)
     query_result = "\n".join(query_result.splitlines())
 
-    return parse(query_result, hostname)
+    parsed = parse(query_result, hostname)
+    if parsed.is_rate_limited:
+        raise RateLimitError()
+
+    return schemas.WhoisRecord.model_validate(asdict(parsed))
