@@ -26,7 +26,11 @@ async def query(address: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT) -
     return query.query_output
 
 
-@stamina.retry(on=asyncio.TimeoutError, attempts=settings.WHOIS_LOOKUP_MAX_RETRIES)
+@stamina.retry(
+    on=(asyncio.TimeoutError, RateLimitError),
+    attempts=settings.WHOIS_LOOKUP_MAX_RETRIES,
+    timeout=None,
+)
 @cached(
     cache=TTLCache(
         maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE, ttl=settings.WHOIS_LOOKUP_CACHE_TTL
