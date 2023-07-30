@@ -24,7 +24,6 @@ WHOIS_LOOKUP_CACHE_TTL: int = config(
     "WHOIS_LOOKUP_CACHE_TTL", cast=int, default=60 * 60
 )
 
-
 IP_ADDRESS_LOOKUP_TIMEOUT: int = config(
     "IP_ADDRESS_LOOKUP_TIMEOUT", cast=int, default=10
 )
