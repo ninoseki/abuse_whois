@@ -33,7 +33,10 @@ async def query(address: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT) -
     )
 )
 async def get_whois_record(
-    hostname: str, *, timeout: int = settings.WHOIS_LOOKUP_TIMEOUT
+    hostname: str,
+    *,
+    timeout: int = settings.WHOIS_LOOKUP_TIMEOUT,
+    parser: WhoisParser = whois_parser
 ) -> schemas.WhoisRecord:
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname
@@ -41,7 +44,7 @@ async def get_whois_record(
     query_result = await query(hostname, timeout=timeout)
     query_result = "\n".join(query_result.splitlines())
 
-    parsed = parse(query_result, hostname)
+    parsed = parse(query_result, hostname, parser=parser)
     if parsed.is_rate_limited:
         raise RateLimitError()
 

@@ -1,7 +1,7 @@
 import asyncio
+from unittest.mock import MagicMock
 
 import pytest
-from pytest_mock import MockerFixture
 from whois_parser.dataclasses import WhoisRecord
 from whois_parser.parser import WhoisParser
 
@@ -22,9 +22,14 @@ def whois_record() -> WhoisRecord:
     return record
 
 
-@pytest.mark.asyncio
-async def test_with_rate_limit(mocker: MockerFixture, whois_record: WhoisRecord):
-    mocker.patch("abuse_whois.whois.parse", return_value=whois_record)
+@pytest.fixture
+def mock(whois_record: WhoisRecord):
+    m = MagicMock()
+    m.parse.return_value = whois_record
+    return m
 
+
+@pytest.mark.asyncio
+async def test_with_rate_limit(mock: MagicMock):
     with pytest.raises(RateLimitError):
-        assert await get_whois_record("example.com")
+        assert await get_whois_record("example.com", parser=mock)
