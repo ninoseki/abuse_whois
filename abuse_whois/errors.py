@@ -4,3 +4,7 @@ class AbuseWhoisError(Exception):
 
 class InvalidAddressError(AbuseWhoisError):
     pass
+
+
+class RateLimitError(AbuseWhoisError):
+    pass
