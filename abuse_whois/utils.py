@@ -20,7 +20,7 @@ from . import settings
 def _is_x(v: str, *, validator: Callable[[str], bool]) -> bool:
     res = validator(v)
 
-    if isinstance(res, validators.ValidationFailure):
+    if isinstance(res, validators.ValidationError):
         return False
 
     return res
