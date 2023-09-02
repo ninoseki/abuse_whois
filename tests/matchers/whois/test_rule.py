@@ -7,7 +7,7 @@ from abuse_whois.matchers.whois.rule import WhoisRule
 from abuse_whois.schemas import WhoisRecord
 from abuse_whois.utils import load_yaml
 
-paths = [p for p in glob.glob("abuse_whois/matchers/whois/rules/*.yaml")]
+paths = list(glob.glob("abuse_whois/matchers/whois/rules/*.yaml"))
 
 
 @pytest.mark.parametrize("path", paths)

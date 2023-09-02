@@ -4,7 +4,7 @@ import pytest
 
 from abuse_whois.matchers.shared_hosting.rule import SharedHostingRule
 
-paths = [p for p in glob.glob("abuse_whois/matchers/shared_hosting/rules/*.yaml")]
+paths = list(glob.glob("abuse_whois/matchers/shared_hosting/rules/*.yaml"))
 
 
 @pytest.mark.parametrize("path", paths)

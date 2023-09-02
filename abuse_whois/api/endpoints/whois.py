@@ -13,6 +13,6 @@ async def whois(query: schemas.Query) -> schemas.Contacts:
     try:
         return await get_abuse_contacts(query.address)
     except InvalidAddressError as e:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except asyncio.TimeoutError as e:
-        raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, detail=str(e))
+        raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, detail=str(e)) from e

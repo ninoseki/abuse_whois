@@ -85,10 +85,10 @@ def with_socket_timeout(timeout: float):
     try:
         socket.setdefaulttimeout(timeout)
         yield
-    except (socket.timeout, ValueError):
+    except (socket.timeout, ValueError) as e:
         raise asyncio.TimeoutError(
             f"{timeout} seconds have passed but there is no response"
-        )
+        ) from e
     finally:
         socket.setdefaulttimeout(old)
 
@@ -129,6 +129,6 @@ def glob_rules(
     paths: set[str] = set()
     for directory in directories:
         for extension in rule_extensions:
-            paths.update([str(p) for p in directory.glob(f"*.{extension}")])
+            paths.update([str(p) for p in directory.glob(f"*.{extension}")])  # type: ignore
 
     return [pathlib.Path(p) for p in paths]

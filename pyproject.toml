@@ -33,7 +33,6 @@ autoflake = "^2.2"
 autopep8 = "^2.0"
 black = "^23.7"
 coveralls = "^3.3"
-isort = "^5.12"
 mypy = "^1.5"
 pre-commit = "^3.3"
 pytest = "^7.4"
@@ -59,3 +58,21 @@ build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.ruff]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "C",   # flake8-comprehensions
+  "B",   # flake8-bugbear
+  "T20", # flake8-print
+  "I",   # isort
+  "RUF", # Ruff-specific rules
+]
+ignore = [
+  "E501", # line too long, handled by black
+]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
