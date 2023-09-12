@@ -8,7 +8,7 @@ from cachetools import TTLCache
 from whois_parser import WhoisParser, WhoisRecord
 
 from . import schemas, settings
-from .errors import RateLimitError
+from .errors import InvalidAddressError, RateLimitError
 from .utils import get_registered_domain, is_domain, is_ip_address
 
 whois_parser = WhoisParser()
@@ -40,16 +40,23 @@ async def get_whois_record(
     hostname: str,
     *,
     timeout: int = settings.WHOIS_LOOKUP_TIMEOUT,
-    parser: WhoisParser = whois_parser
+    parser: WhoisParser = whois_parser,
 ) -> schemas.WhoisRecord:
     if not is_ip_address(hostname):
         hostname = get_registered_domain(hostname) or hostname
 
-    query_result = await query(hostname, timeout=timeout)
-    query_result = "\n".join(query_result.splitlines())
+    try:
+        query_result = await query(hostname, timeout=timeout)
+        query_result = "\n".join(query_result.splitlines())
+        parsed = parse(query_result, hostname, parser=parser)
 
-    parsed = parse(query_result, hostname, parser=parser)
-    if parsed.is_rate_limited:
-        raise RateLimitError()
+        if parsed.is_rate_limited:
+            raise RateLimitError(f"whois rate limit error for {hostname}")
+
+        if parsed.raw_text.startswith("No match for"):
+            raise InvalidAddressError(f"whois no match for {hostname}")
+
+    except asyncio.TimeoutError as e:
+        raise asyncio.TimeoutError(f"whois timeout for {hostname}") from e
 
     return schemas.WhoisRecord.model_validate(asdict(parsed))

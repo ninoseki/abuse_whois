@@ -40,6 +40,4 @@ class Contacts(APIModel):
     registrar: Contact | None = Field(None, description="Registrar")
     hosting_provider: Contact | None = Field(None, description="Hosting provider")
 
-    whois_record: WhoisRecord | None = Field(
-        None, description="Whois record of hostname"
-    )
+    whois_record: WhoisRecord = Field(description="Whois record of hostname")
