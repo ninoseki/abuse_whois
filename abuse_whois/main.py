@@ -4,9 +4,12 @@ import json
 import typer
 
 from . import schemas
-from .errors import InvalidAddressError
+from .errors import InvalidAddressError, RateLimitError
 from .matchers.shared_hosting import get_shared_hosting_provider
-from .matchers.whois import get_optional_whois_contact
+from .matchers.whois import (
+    get_optional_whois_contact,
+    get_whois_contact_by_whois_record,
+)
 from .utils import (
     get_hostname,
     get_registered_domain,
@@ -24,12 +27,19 @@ async def get_abuse_contacts(address: str) -> schemas.Contacts:
 
     hostname = get_hostname(address)  # Domain or IP address
 
-    domain: str | None = None
+    try:
+        whois_record = await get_whois_record(hostname)
+    except asyncio.TimeoutError as e:
+        raise asyncio.TimeoutError(f"whois timeout for {hostname}") from e
+    except RateLimitError as e:
+        raise asyncio.TimeoutError(f"whois rate limit error for {hostname}") from e
+
     ip_address: str | None = None
     registered_domain: str | None = None
+    registrar: schemas.Contact | None = None
 
     if is_domain(hostname):
-        domain = hostname
+        # set registered domain
         registered_domain = get_registered_domain(hostname)
 
         # get IP address by domain
@@ -38,15 +48,14 @@ async def get_abuse_contacts(address: str) -> schemas.Contacts:
         except OSError:
             pass
 
+        # get registrar contact
+        registrar = get_whois_contact_by_whois_record(whois_record)
+
     if is_ip_address(hostname):
         ip_address = hostname
 
-    whois_record = await get_whois_record(hostname)
     shared_hosting_provider = get_shared_hosting_provider(hostname)
-
-    registrar, hosting_provider = await asyncio.gather(
-        get_optional_whois_contact(domain), get_optional_whois_contact(ip_address)
-    )
+    hosting_provider = await get_optional_whois_contact(ip_address)
 
     return schemas.Contacts(
         address=address,

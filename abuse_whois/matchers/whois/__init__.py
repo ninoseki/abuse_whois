@@ -1,5 +1,7 @@
+import asyncio
 import re
 
+from abuse_whois.errors import RateLimitError
 from abuse_whois.schemas import Contact, WhoisRecord
 from abuse_whois.utils import is_email
 from abuse_whois.whois import get_whois_record
@@ -51,21 +53,27 @@ def get_whois_abuse_contact(record: WhoisRecord) -> Contact | None:
     return Contact(provider=provider, address=email)
 
 
-async def get_whois_contact(
-    hostname: str,
+def get_whois_contact_by_whois_record(
+    whois_record: WhoisRecord,
 ) -> Contact | None:
     rules = load_rules()
     for rule in rules:
-        if await rule.match(hostname):
+        if rule.match(whois_record):
             return rule.contact
 
+    return get_whois_abuse_contact(whois_record)
+
+
+async def get_whois_contact(
+    hostname: str,
+) -> Contact | None:
     # Use whois registrar & abuse data
     try:
         whois_record = await get_whois_record(hostname)
-    except Exception:
+    except (asyncio.TimeoutError, RateLimitError):
         return None
 
-    return get_whois_abuse_contact(whois_record)
+    return get_whois_contact_by_whois_record(whois_record)
 
 
 async def get_optional_whois_contact(hostname: str | None) -> Contact | None:
