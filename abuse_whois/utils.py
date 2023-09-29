@@ -3,15 +3,12 @@ import pathlib
 import socket
 from collections.abc import Callable
 from contextlib import contextmanager
-from functools import lru_cache
 from typing import cast
-from urllib.parse import urlparse
 
 import tldextract
 import validators
 import yaml
 from asyncer import asyncify
-from cachetools import TTLCache, cached
 from starlette.datastructures import CommaSeparatedStrings
 
 from . import settings
@@ -26,8 +23,12 @@ def _is_x(v: str, *, validator: Callable[[str], bool]) -> bool:
     return res
 
 
-def is_ip_address(v: str) -> bool:
-    return _is_x(v, validator=validators.ipv4) or _is_x(v, validator=validators.ipv6)  # type: ignore
+def is_ipv4(v: str) -> bool:
+    return _is_x(v, validator=validators.ipv4)  # type: ignore
+
+
+def is_ipv6(v: str) -> bool:
+    return _is_x(v, validator=validators.ipv6)  # type: ignore
 
 
 def is_domain(v: str) -> bool:
@@ -51,14 +52,6 @@ def is_email(v: str) -> bool:
     return _is_x(v, validator=validators.email)  # type: ignore
 
 
-def is_supported_address(v: str) -> bool:
-    if is_domain(v) or is_ip_address(v) or is_email(v) or is_url(v):
-        return True
-
-    return False
-
-
-@lru_cache(maxsize=settings.WHOIS_LOOKUP_CACHE_SIZE)
 def get_registered_domain(v: str) -> str | None:
     parsed = tldextract.extract(v)
 
@@ -66,17 +59,6 @@ def get_registered_domain(v: str) -> str | None:
         return None
 
     return parsed.registered_domain
-
-
-def get_hostname(value: str) -> str:
-    if is_ip_address(value) or is_domain(value):
-        return value
-
-    if is_email(value):
-        value = f"http://{value}"
-
-    parsed = urlparse(value)
-    return parsed.hostname or value
 
 
 @contextmanager
@@ -93,15 +75,7 @@ def with_socket_timeout(timeout: float):
         socket.setdefaulttimeout(old)
 
 
-@cached(
-    cache=TTLCache(
-        maxsize=settings.IP_ADDRESS_LOOKUP_CACHE_SIZE,
-        ttl=settings.IP_ADDRESS_LOOKUP_CACHE_TTL,
-    )
-)
-def _resolve(
-    hostname: str, *, timeout: float = float(settings.IP_ADDRESS_LOOKUP_TIMEOUT)
-) -> str:
+def _resolve(hostname: str, *, timeout: float = float(settings.QUERY_TIMEOUT)) -> str:
     with with_socket_timeout(timeout):
         ip = socket.gethostbyname(hostname)
         return ip

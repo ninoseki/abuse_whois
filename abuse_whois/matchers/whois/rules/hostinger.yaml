@@ -6,7 +6,6 @@ contact:
 detection:
   selection:
     rawText|contains:
-      - "Registrar URL: https://www.hostinger.com"
       - "abuse@hostinger.com"
   condition: selection
 logsource:

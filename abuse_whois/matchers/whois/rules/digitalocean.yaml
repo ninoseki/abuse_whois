@@ -6,7 +6,6 @@ contact:
 detection:
   selection:
     rawText|contains:
-      - "descr:          Digital Ocean, Inc."
       - abuse@digitalocean.com
   condition: selection
 logsource:

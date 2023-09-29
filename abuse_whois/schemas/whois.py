@@ -5,14 +5,14 @@ from pydantic import Field
 from .api_model import APIModel
 
 
-class Contact(APIModel):
+class WhoisContact(APIModel):
     organization: str | None = None
     email: str | None = None
     name: str | None = None
     telephone: str | None = None
 
 
-class Abuse(APIModel):
+class WhoisAbuse(APIModel):
     email: str | None = None
     telephone: str | None = None
 
@@ -20,10 +20,10 @@ class Abuse(APIModel):
 class WhoisRecord(APIModel):
     raw_text: str
 
-    tech: Contact
-    admin: Contact
-    registrant: Contact
-    abuse: Abuse
+    tech: WhoisContact
+    admin: WhoisContact
+    registrant: WhoisContact
+    abuse: WhoisAbuse
 
     statuses: list[str] = Field(default_factory=list)
     name_servers: list[str] = Field(default_factory=list)
