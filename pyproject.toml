@@ -18,6 +18,7 @@ cachetools = "^5.3"
 fastapi = ">=0.100,<1.0"
 gunicorn = { version = "^21.2", optional = true }
 loguru = ">=0.7,<1.0"
+orjson = ">=3.9,<4.0"
 pydantic = "^2.0"
 pyhumps = "^3.8"
 PyYAML = "^6.0"
