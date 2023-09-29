@@ -1,0 +1,12 @@
+title: Gname
+description: A whois rule for Game
+contact:
+  provider: Gname
+  address: https://www.gname.com/abuse/category/2
+detection:
+  selection:
+    rawText|contains:
+      - complaint@gname.com
+  condition: selection
+logsource:
+  product: abuse_whois
