@@ -18,9 +18,9 @@ from abuse_whois.utils import (
     is_url,
     resolve,
 )
+from abuse_whois.whois import query
 
 from .abstract import AbstractService
-from .whois import WhoisQuery
 
 
 @dataclass
@@ -63,17 +63,17 @@ async def get_hostname(address: str) -> Container:
 
 
 @future_safe
-async def rdap_query(
+async def whois_query(
     hostname, *, timeout: int = settings.QUERY_TIMEOUT
 ) -> schemas.WhoisRecord:
-    return await WhoisQuery().call(hostname, timeout=timeout)
+    return await query(hostname, timeout=timeout)
 
 
 async def get_domain_records(
     container: Container, *, timeout: int = settings.QUERY_TIMEOUT
 ) -> ContainerWithRecords:
     domain_record = (
-        (await rdap_query(container.hostname, timeout=timeout).awaitable())
+        (await whois_query(container.hostname, timeout=timeout).awaitable())
         .alt(raise_exception)
         .unwrap()
         ._inner_value
@@ -89,7 +89,7 @@ async def get_domain_records(
 
     if ip_address is not None:
         ip_record = (
-            await rdap_query(container.hostname, timeout=timeout).awaitable()
+            await whois_query(container.hostname, timeout=timeout).awaitable()
         )._inner_value.value_or(None)
 
     return ContainerWithRecords(
@@ -105,7 +105,7 @@ async def get_ip_records(
     container: Container, *, timeout: int = settings.QUERY_TIMEOUT
 ) -> ContainerWithRecords:
     ip_record = (
-        (await rdap_query(container.hostname, timeout=timeout).awaitable())
+        (await whois_query(container.hostname, timeout=timeout).awaitable())
         .alt(raise_exception)
         .unwrap()
         ._inner_value

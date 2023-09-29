@@ -1,4 +1,5 @@
 from functools import partial
+from typing import Any
 
 import httpx
 import orjson
@@ -118,6 +119,24 @@ async def normalize(hostname: str) -> str:
     return hostname
 
 
+def normalize_domain(domain: str | None) -> str | None:
+    if domain is None:
+        return None
+
+    return domain.lower().removesuffix(".")
+
+
+def is_str_list(values: Any) -> bool:
+    if not isinstance(values, list):
+        return False
+
+    for v in values:
+        if not isinstance(v, str):
+            return False
+
+    return True
+
+
 @future_safe
 async def parse(result: DomainLookup | NumberLookup) -> schemas.WhoisRecord:
     parser_output = result.parser_output
@@ -129,35 +148,29 @@ async def parse(result: DomainLookup | NumberLookup) -> schemas.WhoisRecord:
     else:
         raw_text = str(query_output)
 
-    try:
-        return schemas.WhoisRecord(
-            raw_text=raw_text,
-            domain=parser_output.get("domain_name"),
-            name_servers=parser_output.get("nameservers", []),
-            statuses=parser_output.get("status", []),
-            tech=get_contact(parser_output, "technical"),
-            admin=get_contact(parser_output, "admin"),
-            registrant=get_contact(parser_output, "registrant"),
-            abuse=get_abuse(parser_output),
-            expires_at=parser_output.get("expires"),
-            updated_at=parser_output.get("updated"),
-            registered_at=parser_output.get("registered"),
-        )
-    except Exception:
-        # sometimes statuses and name servers cause a validation error because of whodap impl
-        return schemas.WhoisRecord(
-            raw_text=raw_text,
-            domain=parser_output.get("domain_name"),
-            name_servers=[],
-            statuses=[],
-            tech=get_contact(parser_output, "technical"),
-            admin=get_contact(parser_output, "admin"),
-            registrant=get_contact(parser_output, "registrant"),
-            abuse=get_abuse(parser_output),
-            expires_at=parser_output.get("expires"),
-            updated_at=parser_output.get("updated"),
-            registered_at=parser_output.get("registered"),
-        )
+    domain = normalize_domain(parser_output.get("domain_name"))
+
+    name_servers = parser_output.get("nameservers", [])
+    if not is_str_list(name_servers):
+        name_servers = []
+
+    statuses = parser_output.get("status", [])
+    if not is_str_list(statuses):
+        statuses = []
+
+    return schemas.WhoisRecord(
+        raw_text=raw_text,
+        domain=domain,
+        name_servers=name_servers,
+        statuses=statuses,
+        tech=get_contact(parser_output, "technical"),
+        admin=get_contact(parser_output, "admin"),
+        registrant=get_contact(parser_output, "registrant"),
+        abuse=get_abuse(parser_output),
+        expires_at=parser_output.get("expires"),
+        updated_at=parser_output.get("updated"),
+        registered_at=parser_output.get("registered"),
+    )
 
 
 class WhoisQuery(AbstractService):

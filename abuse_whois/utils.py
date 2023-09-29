@@ -8,7 +8,9 @@ from typing import cast
 import tldextract
 import validators
 import yaml
+from asyncache import cached
 from asyncer import asyncify
+from cachetools import TTLCache
 from starlette.datastructures import CommaSeparatedStrings
 
 from . import settings
@@ -75,6 +77,7 @@ def with_socket_timeout(timeout: float):
         socket.setdefaulttimeout(old)
 
 
+@cached(cache=TTLCache(maxsize=settings.QUERY_CACHE_SIZE, ttl=settings.QUERY_CACHE_TTL))
 def _resolve(hostname: str, *, timeout: float = float(settings.QUERY_TIMEOUT)) -> str:
     with with_socket_timeout(timeout):
         ip = socket.gethostbyname(hostname)
