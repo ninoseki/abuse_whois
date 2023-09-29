@@ -2,10 +2,10 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from abuse_whois.schemas.whois import WhoisRecord
 from abuse_whois.utils import is_email, is_url
 
 from .api_model import APIModel
+from .whois import WhoisRecord
 
 
 class Contact(APIModel):
@@ -40,4 +40,4 @@ class Contacts(APIModel):
     registrar: Contact | None = Field(None, description="Registrar")
     hosting_provider: Contact | None = Field(None, description="Hosting provider")
 
-    whois_record: WhoisRecord = Field(description="Whois record of hostname")
+    record: WhoisRecord = Field(description="Whois record of hostname")

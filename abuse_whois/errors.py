@@ -2,7 +2,11 @@ class AbuseWhoisError(Exception):
     pass
 
 
-class InvalidAddressError(AbuseWhoisError):
+class AddressError(AbuseWhoisError):
+    pass
+
+
+class NotFoundError(AbuseWhoisError):
     pass
 
 

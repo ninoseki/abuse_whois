@@ -1,6 +1,9 @@
-import pytest
+import asyncio
 
-from abuse_whois.utils import get_hostname, is_domain, is_email, is_ip_address, is_url
+import pytest
+from pytest_mock import MockerFixture
+
+from abuse_whois.utils import is_domain, is_email, is_ipv4, is_url, resolve
 
 
 @pytest.mark.parametrize(
@@ -12,8 +15,8 @@ from abuse_whois.utils import get_hostname, is_domain, is_email, is_ip_address, 
         ("foo@test.com", False),
     ],
 )
-def test_is_ip_address(v: str, expected: bool):
-    assert is_ip_address(v) is expected
+def test_is_ipv4(v: str, expected: bool):
+    assert is_ipv4(v) is expected
 
 
 @pytest.mark.parametrize(
@@ -55,14 +58,7 @@ def test_is_email(v: str, expected: bool):
     assert is_email(v) is expected
 
 
-@pytest.mark.parametrize(
-    "v,hostname",
-    [
-        ("1.1.1.1", "1.1.1.1"),
-        ("example.com", "example.com"),
-        ("https://github.com", "github.com"),
-        ("foo@test.com", "test.com"),
-    ],
-)
-def test_get_hostname(v: str, hostname: str):
-    assert get_hostname(v) == hostname
+@pytest.mark.asyncio
+async def test_resolve_with_timeout(mocker: MockerFixture):
+    with pytest.raises(asyncio.TimeoutError):
+        assert await resolve("github.com", timeout=-1.0)

@@ -18,15 +18,16 @@ cachetools = "^5.3"
 fastapi = ">=0.100,<1.0"
 gunicorn = { version = "^21.2", optional = true }
 loguru = ">=0.7,<1.0"
+orjson = ">=3.9,<4.0"
 pydantic = "^2.0"
 pyhumps = "^3.8"
 PyYAML = "^6.0"
+returns = "^0.22.0"
 stamina = "^23.1"
 tldextract = "^3.4"
 typer = ">=0.9,<1.0"
 uvicorn = { extras = ["standard"], version = "^0.23", optional = true }
-validators = ">=0.21,<1.0"
-whois-parser = ">=0.3.1,<1.0"
+validators = ">=0.22,<1.0"
 
 [tool.poetry.group.dev.dependencies]
 autoflake = "^2.2"
