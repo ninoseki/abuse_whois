@@ -130,11 +130,7 @@ def is_str_list(values: Any) -> bool:
     if not isinstance(values, list):
         return False
 
-    for v in values:
-        if not isinstance(v, str):
-            return False
-
-    return True
+    return all(isinstance(v, str) for v in values)
 
 
 @future_safe

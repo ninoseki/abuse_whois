@@ -62,14 +62,18 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 select = [
-  "E",   # pycodestyle errors
-  "W",   # pycodestyle warnings
-  "F",   # pyflakes
-  "C",   # flake8-comprehensions
-  "B",   # flake8-bugbear
-  "T20", # flake8-print
-  "I",   # isort
-  "RUF", # Ruff-specific rules
+  "ASYNC", # flake8-async
+  "B",     # flake8-bugbear
+  "C",     # flake8-comprehensions
+  "E",     # pycodestyle errors
+  "F",     # pyflakes
+  "I",     # isort
+  "N",     # pep8-naming
+  "RET",   # flake8-return
+  "RUF",   # Ruff-specific rules
+  "SIM",   # flake8-simplify
+  "T20",   # flake8-print
+  "W",     # pycodestyle warnings
 ]
 ignore = [
   "E501", # line too long, handled by black
