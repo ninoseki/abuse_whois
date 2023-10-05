@@ -21,3 +21,5 @@ async def whois(query: schemas.Query) -> schemas.Contacts:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except errors.AbuseWhoisError as e:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e
+    except ConnectionResetError as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e
