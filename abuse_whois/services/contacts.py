@@ -1,3 +1,4 @@
+import contextlib
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
@@ -82,10 +83,8 @@ async def get_domain_records(
     # get IP address by domain
     ip_record: schemas.WhoisRecord | None = None
     ip_address: str | None = None
-    try:
+    with contextlib.suppress(OSError):
         ip_address = await resolve(container.hostname)
-    except OSError:
-        pass
 
     if ip_address is not None:
         ip_record = (

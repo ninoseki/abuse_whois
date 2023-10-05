@@ -80,8 +80,7 @@ def with_socket_timeout(timeout: float):
 @cached(cache=TTLCache(maxsize=settings.QUERY_CACHE_SIZE, ttl=settings.QUERY_CACHE_TTL))
 def _resolve(hostname: str, *, timeout: float = float(settings.QUERY_TIMEOUT)) -> str:
     with with_socket_timeout(timeout):
-        ip = socket.gethostbyname(hostname)
-        return ip
+        return socket.gethostbyname(hostname)
 
 
 resolve = asyncify(_resolve)
