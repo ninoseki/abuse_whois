@@ -24,7 +24,7 @@ def whois(
     try:
         contacts = asyncio.run(get_abuse_contacts(address))
         print(contacts.model_dump_json(by_alias=True))  # noqa: T201
-    except (errors.AbuseWhoisError, asyncio.TimeoutError) as e:
+    except (errors.AbuseWhoisError, asyncio.TimeoutError, ConnectionResetError) as e:
         print(json.dumps({"error": str(e)}))  # noqa: T201
 
 
