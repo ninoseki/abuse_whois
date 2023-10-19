@@ -95,7 +95,7 @@ async def query(
 def get_contact(parsed: dict, prefix: str) -> schemas.WhoisContact:
     name = parsed.get(f"{prefix}_name", None)
     email = parsed.get(f"{prefix}_email", None)
-    telephone = parsed.get(f"{prefix}_telephone", None)
+    telephone = parsed.get(f"{prefix}_phone", None)
     organization = parsed.get(f"{prefix}_organization", None)
     return schemas.WhoisContact(
         organization=organization, email=email, telephone=telephone, name=name
@@ -103,8 +103,8 @@ def get_contact(parsed: dict, prefix: str) -> schemas.WhoisContact:
 
 
 def get_abuse(parsed: dict) -> schemas.WhoisAbuse:
-    email = parsed.get("abuse_email", None)
-    telephone = parsed.get("abuse_telephone", None)
+    email = parsed.get("registrar_abuse_email", None)
+    telephone = parsed.get("registrar_abuse_phone", None)
     return schemas.WhoisAbuse(
         email=email,
         telephone=telephone,
@@ -146,7 +146,7 @@ async def parse(result: DomainLookup | NumberLookup) -> schemas.WhoisRecord:
 
     domain = normalize_domain(parser_output.get("domain_name"))
 
-    name_servers = parser_output.get("nameservers", [])
+    name_servers = parser_output.get("name_servers", [])
     if not is_str_list(name_servers):
         name_servers = []
 
@@ -166,6 +166,7 @@ async def parse(result: DomainLookup | NumberLookup) -> schemas.WhoisRecord:
         expires_at=parser_output.get("expires"),
         updated_at=parser_output.get("updated"),
         registered_at=parser_output.get("registered"),
+        registrar=parser_output.get("registrar"),
     )
 
 
