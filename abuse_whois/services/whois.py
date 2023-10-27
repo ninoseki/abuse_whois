@@ -1,3 +1,4 @@
+import ssl
 from functools import partial
 from typing import Any
 
@@ -42,7 +43,7 @@ async def domain_query(
     async with httpx.AsyncClient(timeout=timeout) as client:
         try:
             return await DomainLookup.aio_rdap_domain(address, client)
-        except (TimeoutException, WhodapError):
+        except (TimeoutException, WhodapError, ssl.SSLError):
             # fallback to whois
             pass
         except (TypeError, NotImplementedError):
