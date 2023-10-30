@@ -7,6 +7,7 @@ import orjson
 from asyncwhois.errors import NotFoundError as WhoIsNotFoundError
 from asyncwhois.pywhois import DomainLookup, NumberLookup
 from httpx._exceptions import TimeoutException
+from loguru import logger
 from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
 from returns.pipeline import flow
@@ -47,8 +48,9 @@ async def domain_query(
         except (TimeoutException, WhodapError, ssl.SSLError):
             # fallback to whois
             pass
-        except (TypeError, NotImplementedError):
-            pass
+        except Exception as e:
+            # also fallback to whois
+            logger.exception(e)
 
     # fallback to whois
     lookup = await DomainLookup.aio_whois_domain(
