@@ -7,10 +7,12 @@ import orjson
 from asyncwhois.errors import NotFoundError as WhoIsNotFoundError
 from asyncwhois.pywhois import DomainLookup, NumberLookup
 from httpx._exceptions import TimeoutException
+from loguru import logger
 from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
 from returns.pipeline import flow
 from returns.pointfree import bind
+from whodap import DomainResponse
 from whodap.errors import (
     NotFoundError as WhodapNotFoundError,
 )
@@ -46,8 +48,9 @@ async def domain_query(
         except (TimeoutException, WhodapError, ssl.SSLError):
             # fallback to whois
             pass
-        except (TypeError, NotImplementedError):
-            pass
+        except Exception as e:
+            # also fallback to whois
+            logger.exception(e)
 
     # fallback to whois
     lookup = await DomainLookup.aio_whois_domain(
@@ -120,11 +123,18 @@ async def normalize(hostname: str) -> str:
     return hostname
 
 
-def normalize_domain(domain: str | None) -> str | None:
+def normalize_domain(domain: DomainResponse | str | None) -> str | None:
     if domain is None:
         return None
 
-    return domain.lower().removesuffix(".")
+    if isinstance(domain, str):
+        return domain.lower().removesuffix(".")
+
+    v = domain.to_dict().get("stringValue")
+    if v is None:
+        return None
+
+    return str(v).lower().removesuffix(".")
 
 
 def is_str_list(values: Any) -> bool:
