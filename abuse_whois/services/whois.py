@@ -11,6 +11,7 @@ from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
 from returns.pipeline import flow
 from returns.pointfree import bind
+from whodap import DomainResponse
 from whodap.errors import (
     NotFoundError as WhodapNotFoundError,
 )
@@ -120,11 +121,18 @@ async def normalize(hostname: str) -> str:
     return hostname
 
 
-def normalize_domain(domain: str | None) -> str | None:
+def normalize_domain(domain: DomainResponse | str | None) -> str | None:
     if domain is None:
         return None
 
-    return domain.lower().removesuffix(".")
+    if isinstance(domain, str):
+        return domain.lower().removesuffix(".")
+
+    v = domain.to_dict().get("stringValue")
+    if v is None:
+        return None
+
+    return str(v).lower().removesuffix(".")
 
 
 def is_str_list(values: Any) -> bool:
