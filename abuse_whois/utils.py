@@ -69,7 +69,7 @@ def with_socket_timeout(timeout: float):
     try:
         socket.setdefaulttimeout(timeout)
         yield
-    except (socket.timeout, ValueError) as e:
+    except (TimeoutError, ValueError) as e:
         raise asyncio.TimeoutError(
             f"{timeout} seconds have passed but there is no response"
         ) from e

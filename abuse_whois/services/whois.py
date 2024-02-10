@@ -107,8 +107,8 @@ def get_contact(parsed: dict, prefix: str) -> schemas.WhoisContact:
 
 
 def get_abuse(parsed: dict) -> schemas.WhoisAbuse:
-    email = parsed.get("registrar_abuse_email", None)
-    telephone = parsed.get("registrar_abuse_phone", None)
+    email = parsed.get("registrar_abuse_email")
+    telephone = parsed.get("registrar_abuse_phone")
     return schemas.WhoisAbuse(
         email=email,
         telephone=telephone,

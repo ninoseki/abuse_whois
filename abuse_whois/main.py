@@ -19,7 +19,7 @@ async def get_abuse_contacts(address: str) -> schemas.Contacts:
 
 @app.command()
 def whois(
-    address: str = typer.Argument(..., help="URL, domain, IP address or email address")
+    address: str = typer.Argument(..., help="URL, domain, IP address or email address"),
 ):
     try:
         contacts = asyncio.run(get_abuse_contacts(address))
