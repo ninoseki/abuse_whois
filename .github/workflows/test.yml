@@ -5,36 +5,28 @@ on: ["pull_request", "push"]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         python-version: ["3.10", 3.11]
-        poetry-version: [1.6.1]
-
+        poetry-version: [1.7.1]
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: abatilo/actions-poetry@v2
+      - uses: actions/checkout@v4
+      - uses: abatilo/actions-poetry@v3
         with:
           poetry-version: ${{ matrix.poetry-version }}
-
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
-
       - name: Install Python dependencies
         run: poetry install
-
       - name: Run tests
         run: poetry run pytest -v --cov=abuse_whois --cov-report=term-missing
-
       - name: Coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_PARALLEL: true
         run: poetry run coveralls --service=github
-
   coveralls:
     name: Indicate completion to coveralls.io
     needs: test
