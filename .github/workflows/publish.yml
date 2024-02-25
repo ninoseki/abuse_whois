@@ -7,27 +7,20 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: 1.7.1
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.11
-
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: 1.6.1
-
+          cache: "poetry"
       - name: Install plugin
         run: poetry self add "poetry-dynamic-versioning[plugin]"
-
       - name: Set PyPI token
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: poetry config pypi-token.pypi $PYPI_TOKEN
-
       - name: Build and publish
         run: poetry publish --build

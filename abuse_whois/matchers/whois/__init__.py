@@ -1,3 +1,5 @@
+from returns.maybe import Maybe
+
 from abuse_whois import schemas
 from abuse_whois.utils import is_email
 
@@ -5,25 +7,52 @@ from .rule import WhoisRule
 from .rules import load_rules
 
 
+def normalize_abuse_email(email: str | None) -> str | None:
+    return (
+        Maybe.from_optional(email)
+        .bind_optional(lambda x: x.removeprefix("mailto:"))
+        .value_or(None)
+    )
+
+
+def get_provider(record: schemas.WhoisRecord) -> str | None:
+    def inner(email: str) -> str | None:
+        if not is_email(email):
+            return None
+
+        # use email's domain as a provider if provider is None
+        return email.split("@")[-1]
+
+    return (
+        Maybe.from_optional(normalize_abuse_email(record.abuse.email))
+        .bind_optional(inner)
+        .value_or(record.registrar)
+    )
+
+
+def get_address(record: schemas.WhoisRecord) -> str | None:
+    def inner(email: str) -> str | None:
+        # check email format for just in case
+        if not is_email(email):
+            return None
+
+        return email
+
+    return (
+        Maybe.from_optional(normalize_abuse_email(record.abuse.email))
+        .bind_optional(inner)
+        .value_or(None)
+    )
+
+
 def get_registrar_contact(record: schemas.WhoisRecord) -> schemas.Contact | None:
-    provider = record.registrar
-    email: str | None = None
+    provider = get_provider(record)
+    address = get_address(record)
 
-    # check email format for just in case
-    if is_email(record.abuse.email or ""):
-        email = record.abuse.email
-
-    if email is None:
+    if provider is None or address is None:
         return None
 
-    # use email's domain as a provider if provider is None
-    if provider is None and is_email(email or ""):
-        provider = email.split("@")[-1]
-
-    if provider is None or email is None:
-        return None
-
-    return schemas.Contact(provider=provider, address=email)
+    return schemas.Contact(provider=provider, address=address)
 
 
 def get_whois_contact(

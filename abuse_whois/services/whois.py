@@ -1,25 +1,18 @@
-import ssl
 from functools import partial
-from typing import Any
+from typing import Any, cast
 
-import httpx
-import orjson
+from asyncwhois.client import DomainClient, NumberClient
 from asyncwhois.errors import NotFoundError as WhoIsNotFoundError
-from asyncwhois.pywhois import DomainLookup, NumberLookup
-from httpx._exceptions import TimeoutException
-from loguru import logger
+from asyncwhois.parse import IPBaseKeys, TLDBaseKeys
 from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
-from returns.pipeline import flow
+from returns.maybe import Maybe
+from returns.pipeline import flow, is_successful
 from returns.pointfree import bind
+from returns.unsafe import unsafe_perform_io
 from whodap import DomainResponse
-from whodap.errors import (
-    NotFoundError as WhodapNotFoundError,
-)
-from whodap.errors import (
-    RateLimitError,
-    WhodapError,
-)
+from whodap.errors import NotFoundError as WhodapNotFoundError
+from whodap.errors import RateLimitError
 
 from abuse_whois import errors, schemas, settings
 from abuse_whois.utils import (
@@ -31,87 +24,110 @@ from abuse_whois.utils import (
 
 from .abstract import AbstractService
 
-
-def check_rate_limit(lookup: DomainLookup) -> None:
-    for message in settings.WHOIS_RATE_LIMIT_MESSAGES:
-        if message in lookup.query_output:
-            # use whodap's RateLimitError just for convenience
-            raise RateLimitError()
-
-
-async def domain_query(
-    address: str, *, timeout: int = settings.QUERY_TIMEOUT
-) -> DomainLookup:
-    async with httpx.AsyncClient(timeout=timeout) as client:
-        try:
-            return await DomainLookup.aio_rdap_domain(address, client)
-        except (TimeoutException, WhodapError, ssl.SSLError):
-            # fallback to whois
-            pass
-        except Exception as e:
-            # also fallback to whois
-            logger.exception(e)
-
-    # fallback to whois
-    lookup = await DomainLookup.aio_whois_domain(
-        address,
-        timeout=timeout,
-        authoritative_only=False,
-        proxy_url=None,  # type: ignore
-    )
-
-    check_rate_limit(lookup)
-
-    return lookup
+QueryOutput = (
+    tuple[str, dict[str, Any]]
+    | tuple[str, dict[TLDBaseKeys, Any]]
+    | tuple[str, dict[IPBaseKeys, Any]]
+)
 
 
 @future_safe
-async def query(
-    address: str, *, timeout: int = settings.QUERY_TIMEOUT
-) -> DomainLookup | NumberLookup:
-    try:
+async def domain_rdap(domain: str, *, client: DomainClient) -> QueryOutput:
+    return await client.aio_rdap(domain)
+
+
+@future_safe
+async def domain_whois(domain: str, *, client: DomainClient) -> QueryOutput:
+    return await client.aio_whois(domain)
+
+
+@future_safe
+async def raise_on_rate_limit(query_output: QueryOutput) -> QueryOutput:
+    query_string, _ = query_output
+    for message in settings.WHOIS_RATE_LIMIT_MESSAGES:
+        if message in query_string:
+            raise RateLimitError()
+
+    return query_output
+
+
+async def domain_query(domain: str, *, timeout: int = settings.QUERY_TIMEOUT):
+    client = DomainClient(timeout=timeout)
+
+    rdap_result = await domain_rdap(domain, client=client)
+    if is_successful(rdap_result):
+        return unsafe_perform_io(rdap_result.unwrap())
+
+    whois_f_result: FutureResultE[QueryOutput] = flow(
+        domain_whois(domain, client=client), bind(raise_on_rate_limit)
+    )
+    whois_result = await whois_f_result.awaitable()
+    return unsafe_perform_io(whois_result.alt(raise_exception).unwrap())
+
+
+@future_safe
+async def ip_rdap(ip: str, *, client: NumberClient) -> QueryOutput:
+    return await client.aio_rdap(ip)
+
+
+@future_safe
+async def ip_whois(ip: str, *, client: NumberClient) -> QueryOutput:
+    return await client.aio_whois(ip)
+
+
+async def ip_query(ip: str, *, timeout: int = settings.QUERY_TIMEOUT) -> QueryOutput:
+    client = NumberClient(timeout=timeout)
+
+    rdap_result = await ip_rdap(ip, client=client)
+    if is_successful(rdap_result):
+        return unsafe_perform_io(rdap_result.unwrap())
+
+    whois_f_result: FutureResultE[QueryOutput] = flow(
+        ip_whois(ip, client=client), bind(raise_on_rate_limit)
+    )
+    whois_result = await whois_f_result.awaitable()
+    return unsafe_perform_io(whois_result.alt(raise_exception).unwrap())
+
+
+@future_safe
+async def query(address: str, *, timeout: int = settings.QUERY_TIMEOUT) -> QueryOutput:
+    @future_safe
+    async def inner() -> QueryOutput:
         if is_domain(address):
             return await domain_query(address, timeout=timeout)
 
-        if is_ipv4(address):
-            return await NumberLookup.aio_whois_ipv4(
-                address,
-                timeout=timeout,
-                authoritative_only=False,
-                proxy_url=None,  # type: ignore
-            )
+        if is_ipv4(address) or is_ipv6(address):
+            return await ip_query(address, timeout=timeout)
 
-        if is_ipv6(address):
-            return await NumberLookup.aio_whois_ipv6(
-                address,
-                timeout=timeout,
-                authoritative_only=False,
-                proxy_url=None,  # type: ignore
-            )
-    except (WhodapNotFoundError, WhoIsNotFoundError) as e:
-        raise errors.NotFoundError(f"Record for {address} is not found") from e
-    except RateLimitError as e:
-        raise errors.RateLimitError(f"Query for {address} is rate limited") from e
+        raise errors.AddressError(f"{address} is neither of domain, IPv4 and IPv6")
 
-    raise errors.AddressError(f"{address} is neither of domain, IPv4 and IPv6")
+    result = await inner()
+    if not is_successful(result):
+        failure = unsafe_perform_io(result.failure())
+        match failure:
+            case WhodapNotFoundError() | WhoIsNotFoundError():
+                raise errors.NotFoundError(f"Record:{address} not found") from failure
+            case RateLimitError():
+                raise errors.RateLimitError(
+                    f"Query:{address} rate limited"
+                ) from failure
+
+    return unsafe_perform_io(result.alt(raise_exception).unwrap())
 
 
 def get_contact(parsed: dict, prefix: str) -> schemas.WhoisContact:
-    name = parsed.get(f"{prefix}_name", None)
-    email = parsed.get(f"{prefix}_email", None)
-    telephone = parsed.get(f"{prefix}_phone", None)
-    organization = parsed.get(f"{prefix}_organization", None)
     return schemas.WhoisContact(
-        organization=organization, email=email, telephone=telephone, name=name
+        name=parsed.get(f"{prefix}_name", None),
+        email=parsed.get(f"{prefix}_email", None),
+        telephone=parsed.get(f"{prefix}_phone", None),
+        organization=parsed.get(f"{prefix}_organization", None),
     )
 
 
 def get_abuse(parsed: dict) -> schemas.WhoisAbuse:
-    email = parsed.get("registrar_abuse_email", None)
-    telephone = parsed.get("registrar_abuse_phone", None)
     return schemas.WhoisAbuse(
-        email=email,
-        telephone=telephone,
+        email=parsed.get("registrar_abuse_email"),
+        telephone=parsed.get("registrar_abuse_phone"),
     )
 
 
@@ -130,11 +146,11 @@ def normalize_domain(domain: DomainResponse | str | None) -> str | None:
     if isinstance(domain, str):
         return domain.lower().removesuffix(".")
 
-    v = domain.to_dict().get("stringValue")
-    if v is None:
-        return None
-
-    return str(v).lower().removesuffix(".")
+    return (
+        Maybe.from_optional(domain.to_dict().get("stringValue"))
+        .bind_optional(lambda x: str(x).lower().removesuffix("."))
+        .value_or(None)
+    )
 
 
 def is_str_list(values: Any) -> bool:
@@ -144,32 +160,26 @@ def is_str_list(values: Any) -> bool:
     return all(isinstance(v, str) for v in values)
 
 
+def get_str_list(data: dict[str, Any], key: str) -> list[str]:
+    return cast(
+        list[str],
+        (
+            Maybe.from_optional(data.get(key))
+            .bind_optional(lambda x: x if is_str_list(x) else [])
+            .value_or([])
+        ),
+    )
+
+
 @future_safe
-async def parse(result: DomainLookup | NumberLookup) -> schemas.WhoisRecord:
-    parser_output = result.parser_output
-    query_output = result.query_output
-
-    raw_text: str = ""
-    if isinstance(query_output, dict):
-        raw_text = orjson.dumps(query_output).decode()
-    else:
-        raw_text = str(query_output)
-
-    domain = normalize_domain(parser_output.get("domain_name"))
-
-    name_servers = parser_output.get("name_servers", [])
-    if not is_str_list(name_servers):
-        name_servers = []
-
-    statuses = parser_output.get("status", [])
-    if not is_str_list(statuses):
-        statuses = []
-
+async def parse(query_output: QueryOutput) -> schemas.WhoisRecord:
+    query_string, parser_output = query_output
+    parser_output = cast(dict[str, Any], parser_output)
     return schemas.WhoisRecord(
-        raw_text=raw_text,
-        domain=domain,
-        name_servers=name_servers,
-        statuses=statuses,
+        raw_text=query_string,
+        domain=normalize_domain(parser_output.get("domain_name")),
+        name_servers=get_str_list(parser_output, "name_servers"),
+        statuses=get_str_list(parser_output, "status"),
         tech=get_contact(parser_output, "technical"),
         admin=get_contact(parser_output, "admin"),
         registrant=get_contact(parser_output, "registrant"),
@@ -185,7 +195,8 @@ class WhoisQuery(AbstractService):
     async def call(
         self, hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
     ) -> schemas.WhoisRecord:
-        result: FutureResultE[schemas.WhoisRecord] = flow(
+        f_result: FutureResultE[schemas.WhoisRecord] = flow(
             hostname, normalize, bind(partial(query, timeout=timeout)), bind(parse)
         )
-        return (await result.awaitable()).alt(raise_exception).unwrap()._inner_value
+        result = await f_result.awaitable()
+        return unsafe_perform_io(result.alt(raise_exception).unwrap())

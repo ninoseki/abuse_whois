@@ -1,11 +1,15 @@
 import contextlib
 from dataclasses import dataclass
+from functools import partial
 from urllib.parse import urlparse
 
+import aiometer
 from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
 from returns.pipeline import flow
 from returns.pointfree import bind
+from returns.result import ResultE, safe
+from returns.unsafe import unsafe_perform_io
 
 from abuse_whois import errors, schemas, settings
 from abuse_whois.matchers.shared_hosting import get_shared_hosting_provider
@@ -26,12 +30,7 @@ from .abstract import AbstractService
 
 @dataclass
 class Container:
-    address: str
     hostname: str
-
-
-@dataclass
-class ContainerWithRecords(Container):
     ip_address: str | None
     domain_record: schemas.WhoisRecord | None
     ip_record: schemas.WhoisRecord | None
@@ -39,18 +38,17 @@ class ContainerWithRecords(Container):
 
 @future_safe
 async def validate_address(address: str) -> str:
-    funcs = [is_email, is_domain, is_ipv4, is_ipv6, is_url]
-    for f in funcs:
+    for f in [is_email, is_domain, is_ipv4, is_ipv6, is_url]:
         if f(address):
             return address
 
-    raise errors.AddressError(f"{address} is not supported type address")
+    raise errors.AddressError(f"Address:{address} not supported address type")
 
 
 @future_safe
-async def get_hostname(address: str) -> Container:
+async def get_hostname(address: str) -> str:
     if is_ipv6(address) or is_ipv4(address) or is_domain(address):
-        return Container(hostname=address, address=address)
+        return address
 
     url_or_email = address
     if is_email(url_or_email):
@@ -58,123 +56,137 @@ async def get_hostname(address: str) -> Container:
 
     parsed = urlparse(url_or_email)
     if parsed.hostname is None:
-        raise errors.AddressError(f"{address} does not have hostname")
+        raise errors.AddressError(f"Address:{address} does not have hostname")
 
-    return Container(hostname=parsed.hostname, address=address)
+    return parsed.hostname
 
 
 @future_safe
-async def whois_query(
+async def safe_query(
     hostname, *, timeout: int = settings.QUERY_TIMEOUT
 ) -> schemas.WhoisRecord:
     return await query(hostname, timeout=timeout)
 
 
-async def get_domain_records(
-    container: Container, *, timeout: int = settings.QUERY_TIMEOUT
-) -> ContainerWithRecords:
-    domain_record = (
-        (await whois_query(container.hostname, timeout=timeout).awaitable())
-        .alt(raise_exception)
-        .unwrap()
-        ._inner_value
-    )
+async def get_ip_record(
+    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
+) -> schemas.WhoisRecord:
+    ip_f_result = await safe_query(hostname, timeout=timeout)
+    return unsafe_perform_io(ip_f_result.alt(raise_exception).unwrap())
 
-    # get IP address by domain
+
+async def get_optional_ip_record(
+    hostname: str | None, *, timeout: int = settings.QUERY_TIMEOUT
+) -> schemas.WhoisRecord | None:
+    if hostname is None:
+        return None
+
+    return await get_ip_record(hostname, timeout=timeout)
+
+
+async def get_domain_record(
+    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
+) -> schemas.WhoisRecord:
+    domain_f_result = await safe_query(hostname, timeout=timeout)
+    return unsafe_perform_io(domain_f_result.alt(raise_exception).unwrap())
+
+
+@future_safe
+async def get_records(
+    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
+) -> Container:
+    domain_record: schemas.WhoisRecord | None = None
     ip_record: schemas.WhoisRecord | None = None
+
     ip_address: str | None = None
-    with contextlib.suppress(OSError):
-        ip_address = await resolve(container.hostname)
+    if is_domain(hostname):
+        # get IP address by domain
+        with contextlib.suppress(OSError):
+            ip_address = await resolve(hostname)
 
-    if ip_address is not None:
-        ip_record = (
-            await whois_query(container.hostname, timeout=timeout).awaitable()
-        )._inner_value.value_or(None)
-
-    return ContainerWithRecords(
-        address=container.address,
-        hostname=container.hostname,
+    tasks = [
+        partial(get_domain_record, hostname, timeout=timeout),
+        partial(get_optional_ip_record, ip_address, timeout=timeout),
+    ]
+    domain_record, ip_record = await aiometer.run_all(tasks)
+    return Container(
+        hostname=hostname,
         domain_record=domain_record,
         ip_record=ip_record,
         ip_address=ip_address,
     )
 
 
-async def get_ip_records(
-    container: Container, *, timeout: int = settings.QUERY_TIMEOUT
-) -> ContainerWithRecords:
-    ip_record = (
-        (await whois_query(container.hostname, timeout=timeout).awaitable())
-        .alt(raise_exception)
-        .unwrap()
-        ._inner_value
-    )
-
-    return ContainerWithRecords(
-        address=container.address,
-        hostname=container.hostname,
-        domain_record=None,
-        ip_record=ip_record,
-        ip_address=container.hostname,
-    )
-
-
 @future_safe
-async def get_records(
-    container: Container, *, timeout: int = settings.QUERY_TIMEOUT
-) -> ContainerWithRecords:
-    if is_domain(container.hostname):
-        return await get_domain_records(container, timeout=timeout)
+async def get_contacts(container: Container, *, address: str) -> schemas.Contacts:
+    @safe
+    def set_records(container: Container) -> schemas.Contacts:
+        if container.ip_record is None and container.domain_record is None:
+            raise errors.NotFoundError(
+                f"Record: {container.hostname} not found or something went wrong"
+            )
 
-    return await get_ip_records(container, timeout=timeout)
-
-
-@future_safe
-async def get_contacts(container: ContainerWithRecords):
-    main_record = (
-        container.domain_record
-        if is_domain(container.hostname)
-        else container.ip_record
-    )
-    if main_record is None:
-        raise errors.NotFoundError(
-            f"Record for {container.hostname} is not found or something went wrong"
+        return schemas.Contacts(
+            records=schemas.ContactsRecords(
+                ip_address=container.ip_record, domain=container.domain_record
+            ),
+            address=address,
+            ip_address=container.ip_address,
+            hostname=container.hostname,
+            registered_domain=None,
+            shared_hosting_provider=None,
+            hosting_provider=None,
+            registrar=None,
         )
 
-    registered_domain: str | None = None
-    if is_domain(container.hostname):
-        # set registered domain
-        registered_domain = get_registered_domain(container.hostname)
+    @safe
+    def set_registered_domain(contacts: schemas.Contacts) -> schemas.Contacts:
+        if is_domain(container.hostname):
+            contacts.registered_domain = get_registered_domain(container.hostname)
 
-    registrar: schemas.Contact | None = None
-    if container.domain_record is not None:
-        registrar = get_whois_contact(container.domain_record)
+        return contacts
 
-    hosting_provider: schemas.Contact | None = None
-    if container.ip_record is not None:
-        hosting_provider = get_whois_contact(container.ip_record)
+    @safe
+    def set_registrar(contacts: schemas.Contacts) -> schemas.Contacts:
+        if container.domain_record is not None:
+            contacts.registrar = get_whois_contact(container.domain_record)
 
-    shared_hosting_provider = get_shared_hosting_provider(container.hostname)
+        return contacts
 
-    return schemas.Contacts(
-        address=container.address,
-        hostname=container.hostname,
-        ip_address=container.ip_address,
-        registered_domain=registered_domain,
-        shared_hosting_provider=shared_hosting_provider,
-        registrar=registrar,
-        hosting_provider=hosting_provider,
-        record=main_record,
+    @safe
+    def set_hosting_provider(contacts: schemas.Contacts) -> schemas.Contacts:
+        if container.ip_record is not None:
+            contacts.hosting_provider = get_whois_contact(container.ip_record)
+
+        return contacts
+
+    @safe
+    def set_shared_hosting_provider(
+        contacts: schemas.Contacts,
+    ) -> schemas.Contacts:
+        contacts.shared_hosting_provider = get_shared_hosting_provider(
+            container.hostname
+        )
+        return contacts
+
+    result: ResultE[schemas.Contacts] = flow(
+        set_records(container),
+        bind(set_registered_domain),
+        bind(set_registrar),
+        bind(set_hosting_provider),
+        bind(set_shared_hosting_provider),
     )
+    return result.alt(raise_exception).unwrap()
 
 
 class ContactsQuery(AbstractService):
     async def call(self, address: str) -> schemas.Contacts:
-        result: FutureResultE[schemas.Contacts] = flow(
+        f_result: FutureResultE[schemas.Contacts] = flow(
             address,
             validate_address,
             bind(get_hostname),
             bind(get_records),
-            bind(get_contacts),
+            bind(partial(get_contacts, address=address)),
         )
-        return (await result.awaitable()).alt(raise_exception).unwrap()._inner_value
+        result = await f_result.awaitable()
+        return unsafe_perform_io(result.alt(raise_exception).unwrap())
