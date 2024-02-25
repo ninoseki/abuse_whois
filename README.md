@@ -4,7 +4,7 @@
 [![Python CI](https://github.com/ninoseki/abuse_whois/actions/workflows/test.yml/badge.svg)](https://github.com/ninoseki/abuse_whois/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/abuse_whois/badge.svg?branch=main)](https://coveralls.io/github/ninoseki/abuse_whois?branch=main)
 
-Yet another way to find where to report an abuse.
+A Sigma and RDAP/Whois based abuse contacts finder.
 
 ![img](./images/overview.jpg)
 
@@ -12,6 +12,11 @@ This tool is highly inspired from the following libraries:
 
 - https://github.com/bradleyjkemp/abwhose
 - https://github.com/certsocietegenerale/abuse_finder
+
+## How It Works
+
+- Query a given address via RDAP (fallback to Whois is if RDAP fails)
+- Check a query result with Sigma rules and find contacts (fallback to regex if there is no match)
 
 ## Requirements
 
@@ -42,7 +47,10 @@ await get_abuse_contacts("foo@example.com")
 ### As a CLI tool
 
 ```bash
-$ abuse_whois 1.1.1.1 | jq .
+abuse_whois 1.1.1.1
+abuse_whois example.com
+abuse_whois foo@example.com
+abuse_whois http://example.com
 ```
 
 ### As a REST API
