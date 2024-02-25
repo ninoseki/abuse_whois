@@ -3,7 +3,11 @@ import sys
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
 
-config = Config(".env")
+# NOTE: workaround for Starlette v0.36
+try:
+    config = Config(".env")
+except Exception:
+    config = Config()
 
 # FastAPI settings
 PROJECT_NAME: str = config("PROJECT_NAME", default="abuse-whois")

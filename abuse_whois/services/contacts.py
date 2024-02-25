@@ -91,6 +91,16 @@ async def get_domain_record(
     return unsafe_perform_io(domain_f_result.alt(raise_exception).unwrap())
 
 
+async def get_optional_domain_record(
+    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
+) -> schemas.WhoisRecord | None:
+    if not is_domain(hostname):
+        return None
+
+    domain_f_result = await safe_query(hostname, timeout=timeout)
+    return unsafe_perform_io(domain_f_result.alt(raise_exception).unwrap())
+
+
 @future_safe
 async def get_records(
     hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
@@ -103,9 +113,11 @@ async def get_records(
         # get IP address by domain
         with contextlib.suppress(OSError):
             ip_address = await resolve(hostname)
+    else:
+        ip_address = hostname
 
     tasks = [
-        partial(get_domain_record, hostname, timeout=timeout),
+        partial(get_optional_domain_record, hostname, timeout=timeout),
         partial(get_optional_ip_record, ip_address, timeout=timeout),
     ]
     domain_record, ip_record = await aiometer.run_all(tasks)
