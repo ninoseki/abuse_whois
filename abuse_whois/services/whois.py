@@ -51,39 +51,28 @@ async def raise_on_rate_limit(query_output: QueryOutput) -> QueryOutput:
     return query_output
 
 
-async def domain_query(domain: str, *, timeout: int = settings.QUERY_TIMEOUT):
-    client = DomainClient(timeout=timeout)
-
-    rdap_result = await domain_rdap(domain, client=client)
-    if is_successful(rdap_result):
-        return unsafe_perform_io(rdap_result.unwrap())
-
-    whois_f_result: FutureResultE[QueryOutput] = flow(
-        domain_whois(domain, client=client), bind(raise_on_rate_limit)
-    )
-    whois_result = await whois_f_result.awaitable()
-    return unsafe_perform_io(whois_result.alt(raise_exception).unwrap())
+@future_safe
+async def rdap(hostname: str, *, client: DomainClient | NumberClient):
+    return await client.aio_rdap(hostname)
 
 
 @future_safe
-async def ip_rdap(ip: str, *, client: NumberClient) -> QueryOutput:
-    return await client.aio_rdap(ip)
+async def whois(hostname: str, *, client: DomainClient | NumberClient):
+    return await client.aio_whois(hostname)
 
 
-@future_safe
-async def ip_whois(ip: str, *, client: NumberClient) -> QueryOutput:
-    return await client.aio_whois(ip)
-
-
-async def ip_query(ip: str, *, timeout: int = settings.QUERY_TIMEOUT) -> QueryOutput:
-    client = NumberClient(timeout=timeout)
-
-    rdap_result = await ip_rdap(ip, client=client)
+async def _query(hostname: str, *, client: DomainClient | NumberClient):
+    rdap_result = await rdap(hostname, client=client)
     if is_successful(rdap_result):
-        return unsafe_perform_io(rdap_result.unwrap())
+        query_string, parsed = unsafe_perform_io(rdap_result.unwrap())
+
+        registrar = parsed.get("registrar")
+        email = parsed.get("registrar_abuse_email")
+        if registrar is not None or email is not None:
+            return query_string, parsed
 
     whois_f_result: FutureResultE[QueryOutput] = flow(
-        ip_whois(ip, client=client), bind(raise_on_rate_limit)
+        whois(hostname, client=client), bind(raise_on_rate_limit)
     )
     whois_result = await whois_f_result.awaitable()
     return unsafe_perform_io(whois_result.alt(raise_exception).unwrap())
@@ -94,10 +83,10 @@ async def query(address: str, *, timeout: int = settings.QUERY_TIMEOUT) -> Query
     @future_safe
     async def inner() -> QueryOutput:
         if is_domain(address):
-            return await domain_query(address, timeout=timeout)
+            return await _query(address, client=DomainClient(timeout=timeout))
 
         if is_ipv4(address) or is_ipv6(address):
-            return await ip_query(address, timeout=timeout)
+            return await _query(address, client=NumberClient(timeout=timeout))
 
         raise errors.AddressError(f"{address} is neither of domain, IPv4 and IPv6")
 
