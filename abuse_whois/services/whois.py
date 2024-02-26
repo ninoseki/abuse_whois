@@ -162,21 +162,21 @@ def get_str_list(data: dict[str, Any], key: str) -> list[str]:
 
 @future_safe
 async def parse(query_output: QueryOutput) -> schemas.WhoisRecord:
-    query_string, parser_output = query_output
-    parser_output = cast(dict[str, Any], parser_output)
+    query_string, parsed = query_output
+    parsed = cast(dict[str, Any], parsed)
     return schemas.WhoisRecord(
         raw_text=query_string,
-        domain=normalize_domain(parser_output.get("domain_name")),
-        name_servers=get_str_list(parser_output, "name_servers"),
-        statuses=get_str_list(parser_output, "status"),
-        tech=get_contact(parser_output, "technical"),
-        admin=get_contact(parser_output, "admin"),
-        registrant=get_contact(parser_output, "registrant"),
-        abuse=get_abuse(parser_output),
-        expires_at=parser_output.get("expires"),
-        updated_at=parser_output.get("updated"),
-        registered_at=parser_output.get("registered"),
-        registrar=parser_output.get("registrar"),
+        domain=normalize_domain(parsed.get("domain_name")),
+        name_servers=get_str_list(parsed, "name_servers"),
+        statuses=get_str_list(parsed, "status"),
+        tech=get_contact(parsed, "technical"),
+        admin=get_contact(parsed, "admin"),
+        registrant=get_contact(parsed, "registrant"),
+        abuse=get_abuse(parsed),
+        expires_at=parsed.get("expires"),
+        updated_at=parsed.get("updated"),
+        registered_at=parsed.get("registered"),
+        registrar=parsed.get("registrar"),
     )
 
 
