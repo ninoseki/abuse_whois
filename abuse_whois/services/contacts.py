@@ -68,27 +68,14 @@ async def safe_query(
     return await query(hostname, timeout=timeout)
 
 
-async def get_ip_record(
-    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
-) -> schemas.WhoisRecord:
-    ip_f_result = await safe_query(hostname, timeout=timeout)
-    return unsafe_perform_io(ip_f_result.alt(raise_exception).unwrap())
-
-
 async def get_optional_ip_record(
     hostname: str | None, *, timeout: int = settings.QUERY_TIMEOUT
 ) -> schemas.WhoisRecord | None:
     if hostname is None:
         return None
 
-    return await get_ip_record(hostname, timeout=timeout)
-
-
-async def get_domain_record(
-    hostname: str, *, timeout: int = settings.QUERY_TIMEOUT
-) -> schemas.WhoisRecord:
-    domain_f_result = await safe_query(hostname, timeout=timeout)
-    return unsafe_perform_io(domain_f_result.alt(raise_exception).unwrap())
+    ip_f_result = await safe_query(hostname, timeout=timeout)
+    return unsafe_perform_io(ip_f_result.value_or(None))
 
 
 async def get_optional_domain_record(
@@ -98,7 +85,7 @@ async def get_optional_domain_record(
         return None
 
     domain_f_result = await safe_query(hostname, timeout=timeout)
-    return unsafe_perform_io(domain_f_result.alt(raise_exception).unwrap())
+    return unsafe_perform_io(domain_f_result.value_or(None))
 
 
 @future_safe
