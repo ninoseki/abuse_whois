@@ -90,7 +90,8 @@ async def query(address: str, *, timeout: int = settings.QUERY_TIMEOUT) -> Query
 
         raise errors.AddressError(f"{address} is neither of domain, IPv4 and IPv6")
 
-    result = await inner()
+    f_result = inner()
+    result = await f_result.awaitable()
     if not is_successful(result):
         failure = unsafe_perform_io(result.failure())
         match failure:

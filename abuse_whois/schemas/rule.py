@@ -1,8 +1,12 @@
 import azuma
 
-from .api_model import APIModel
+from .api_model import APIModel, RootAPIModel
 from .contact import Contact
 
 
-class BaseRule(APIModel, azuma.Rule):
+class Rule(APIModel, azuma.Rule):
     contact: Contact
+
+
+class RuleSet(RootAPIModel, azuma.RuleSet):
+    pass

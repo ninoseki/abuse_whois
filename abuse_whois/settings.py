@@ -3,11 +3,7 @@ import sys
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
 
-# NOTE: workaround for Starlette v0.36
-try:
-    config = Config(".env")
-except Exception:
-    config = Config()
+config = Config(".env")
 
 # FastAPI settings
 PROJECT_NAME: str = config("PROJECT_NAME", default="abuse-whois")
@@ -29,11 +25,11 @@ QUERY_MAX_RETRIES: int = config("QUERY_MAX_RETRIES", cast=int, default=3)
 RULE_EXTENSIONS: CommaSeparatedStrings = config(
     "RULE_EXTENSIONS", cast=CommaSeparatedStrings, default="yaml,yml"
 )
-ADDITIONAL_WHOIS_RULE_DIRECTORIES: CommaSeparatedStrings = config(
-    "ADDITIONAL_WHOIS_RULE_DIRECTORIES", cast=CommaSeparatedStrings, default=""
+ADDITIONAL_WHOIS_RULE_DIRECTORY: str | None = config(
+    "ADDITIONAL_WHOIS_RULE_DIRECTORY", cast=str, default=None
 )
-ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES: CommaSeparatedStrings = config(
-    "ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES", cast=CommaSeparatedStrings, default=""
+ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORY: str | None = config(
+    "ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORY", cast=str, default=None
 )
 
 # Etc.

@@ -1,15 +1,12 @@
 import asyncio
-import pathlib
 import socket
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from contextlib import contextmanager
-from typing import cast
+from typing import Any, TypeVar
 
 import tldextract
 import validators
-import yaml
 from asyncer import asyncify
-from starlette.datastructures import CommaSeparatedStrings
 
 from . import settings
 
@@ -83,25 +80,41 @@ def _resolve(hostname: str, *, timeout: float = float(settings.QUERY_TIMEOUT)) -
 resolve = asyncify(_resolve)
 
 
-def load_yaml(path: str | pathlib.Path) -> dict:
-    with open(path) as f:
-        return cast(dict, yaml.safe_load(f))
+def is_iterable(obj: Any) -> bool:
+    try:
+        iter(obj)
+    except TypeError:
+        return False
+    return True
 
 
-def glob_rules(
-    base_directory: str | pathlib.Path,
-    *,
-    additional_directories: list[str] | list[pathlib.Path] | CommaSeparatedStrings,
-    rule_extensions=settings.RULE_EXTENSIONS,
-) -> list[pathlib.Path]:
-    directories = [base_directory]
-    directories.extend(additional_directories)
+T = TypeVar("T")
 
-    directories = [pathlib.Path(d) for d in directories]
 
-    paths: set[str] = set()
-    for directory in directories:
-        for extension in rule_extensions:
-            paths.update([str(p) for p in directory.glob(f"*.{extension}")])  # type: ignore
+def unique(src: Iterable[T], key: str | Callable[[T], Any] | None = None) -> list[T]:
+    return list(unique_iter(src, key))
 
-    return [pathlib.Path(p) for p in paths]
+
+def unique_iter(src: Iterable[T], key: str | Callable[[T], Any] | None = None):
+    if not is_iterable(src):
+        raise TypeError("expected an iterable, not %r" % type(src))
+
+    def build_key_func():
+        if key is None:
+            return lambda x: x
+
+        if callable(key):
+            return key
+
+        if isinstance(key, str):
+            return lambda x: getattr(x, key, x)
+
+        raise TypeError('"key" expected a string or callable, not %r' % key)
+
+    key_func = build_key_func()
+    seen = set()
+    for i in src:
+        k = key_func(i)
+        if k not in seen:
+            seen.add(k)
+            yield i

@@ -78,15 +78,15 @@ docker run -i -d -p 8000:8000 abuse-whois
 
 All settings can be done via environment variables or `.env` file.
 
-| Name                                       | Type                  | Default  | Desc.                                                    |
-| ------------------------------------------ | --------------------- | -------- | -------------------------------------------------------- |
-| QUERY_TIMEOUT                              | int                   | 10       | Timeout value for whois lookup (seconds)                 |
-| QUERY_CACHE_SIZE                           | int                   | 1024     | Cache size for whois lookup                              |
-| QUERY_CACHE_TTL                            | int                   | 3600     | Cache TTL value for whois lookup (seconds)               |
-| QUERY_MAX_RETRIES                          | int                   | 3        | Max retries on timeout error                             |
-| RULE_EXTENSIONS                            | CommaSeparatedStrings | yaml,yml | Rule file extensions                                     |
-| ADDITIONAL_WHOIS_RULE_DIRECTORIES          | CommaSeparatedStrings |          | Additional directories contain whois rule files          |
-| ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORIES | CommaSeparatedStrings |          | Additional directories contain shared hosting rule files |
+| Name                                     | Type                  | Default  | Desc.                                                   |
+| ---------------------------------------- | --------------------- | -------- | ------------------------------------------------------- |
+| QUERY_TIMEOUT                            | int                   | 10       | Timeout value for whois lookup (seconds)                |
+| QUERY_CACHE_SIZE                         | int                   | 1024     | Cache size for whois lookup                             |
+| QUERY_CACHE_TTL                          | int                   | 3600     | Cache TTL value for whois lookup (seconds)              |
+| QUERY_MAX_RETRIES                        | int                   | 3        | Max retries on timeout error                            |
+| RULE_EXTENSIONS                          | CommaSeparatedStrings | yaml,yml | Rule file extensions                                    |
+| ADDITIONAL_WHOIS_RULE_DIRECTORY          | str                   |          | Additional contains contain whois rule files            |
+| ADDITIONAL_SHARED_HOSTING_RULE_DIRECTORY | str                   |          | Additional directory contains shared hosting rule files |
 
 ## Contributions
 
