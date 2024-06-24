@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from contextlib import contextmanager
 from typing import Any, TypeVar
 
-import tldextract
+import tld
 import validators
 from asyncer import asyncify
 
@@ -50,12 +50,12 @@ def is_email(v: str) -> bool:
 
 
 def get_registered_domain(v: str) -> str | None:
-    parsed = tldextract.extract(v)
+    registered_domain = tld.get_fld(v, fail_silently=True, fix_protocol=True)
 
-    if parsed.registered_domain == "":
+    if registered_domain == "":
         return None
 
-    return parsed.registered_domain
+    return registered_domain
 
 
 @contextmanager
