@@ -3,7 +3,7 @@ title: Namesilo
 description: A whois rule for Namesilo
 contact:
   provider: Namesilo
-  address: https://www.namesilo.com/report_abuse.php
+  address: https://example.com
 detection:
   selection:
     rawText|contains:

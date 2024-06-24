@@ -1,10 +1,43 @@
+import itertools
+import pathlib
+from pathlib import Path
+
 from returns.maybe import Maybe
 
-from abuse_whois import schemas
-from abuse_whois.utils import is_email
+from abuse_whois import schemas, settings
+from abuse_whois.utils import is_email, unique
 
-from .rule import WhoisRule
-from .rules import load_rules
+DEFAULT_RULE_DIRECTORY: pathlib.Path = pathlib.Path(__file__).parent / "./rules"
+
+
+class WhoisRule(schemas.Rule):
+    def match(self, record: schemas.WhoisRecord) -> bool:
+        return super().match(record.model_dump(by_alias=True))
+
+
+class WhoisRuleSet(schemas.RootAPIModel):
+    root: list[WhoisRule]
+
+    @classmethod
+    def from_dir(cls, dir: str | Path = DEFAULT_RULE_DIRECTORY):
+        dir = Path(dir) if isinstance(dir, str) else dir
+        paths = itertools.chain.from_iterable(
+            [dir.glob(f"**/*.{ext}") for ext in settings.RULE_EXTENSIONS]
+        )
+        return cls(root=[WhoisRule.model_validate_file(p) for p in paths])
+
+
+def load_rule_set():
+    base = WhoisRuleSet.from_dir(DEFAULT_RULE_DIRECTORY)
+    addition = (
+        WhoisRuleSet(root=[])
+        if settings.ADDITIONAL_WHOIS_RULE_DIRECTORY is None
+        else WhoisRuleSet.from_dir(settings.ADDITIONAL_WHOIS_RULE_DIRECTORY)
+    )
+    return WhoisRuleSet(root=unique(addition.root + base.root, "id"))
+
+
+default_rule_set = load_rule_set()
 
 
 def normalize_abuse_email(email: str | None) -> str | None:
@@ -58,8 +91,8 @@ def get_registrar_contact(record: schemas.WhoisRecord) -> schemas.Contact | None
 def get_whois_contact(
     record: schemas.WhoisRecord, *, rules: list[WhoisRule] | None = None
 ) -> schemas.Contact | None:
-    rules = rules or load_rules()
-    for rule in rules:
+    rule_set = WhoisRuleSet(root=rules or default_rule_set.root)  # type: ignore
+    for rule in rule_set:
         if rule.match(record):
             return rule.contact
 

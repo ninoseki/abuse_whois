@@ -1,9 +1,9 @@
 import contextlib
-from dataclasses import dataclass
 from functools import partial
 from urllib.parse import urlparse
 
 import aiometer
+from pydantic import BaseModel
 from returns.functions import raise_exception
 from returns.future import FutureResultE, future_safe
 from returns.pipeline import flow
@@ -28,8 +28,7 @@ from abuse_whois.whois import query
 from .abstract import AbstractService
 
 
-@dataclass
-class Container:
+class Container(BaseModel):
     hostname: str
     ip_address: str | None
     domain_record: schemas.WhoisRecord | None

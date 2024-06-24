@@ -3,16 +3,15 @@ import json
 
 import pytest
 
-from abuse_whois.matchers.whois.rule import WhoisRule
+from abuse_whois.matchers.whois import WhoisRule, WhoisRuleSet
 from abuse_whois.schemas import WhoisRecord
-from abuse_whois.utils import load_yaml
 
 paths = list(glob.glob("abuse_whois/matchers/whois/rules/*.yaml"))
 
 
 @pytest.mark.parametrize("path", paths)
 def test_load_rules(path: str):
-    assert WhoisRule.model_validate(load_yaml(path))
+    assert WhoisRule.model_validate_file(path)
 
 
 @pytest.fixture
@@ -24,8 +23,8 @@ def godaddy_whois_record():
 
 @pytest.fixture
 def godaddy_whois_rule():
-    return WhoisRule.model_validate(
-        load_yaml("abuse_whois/matchers/whois/rules/godaddy.yaml")
+    return WhoisRule.model_validate_file(
+        "abuse_whois/matchers/whois/rules/godaddy.yaml"
     )
 
 
@@ -36,3 +35,8 @@ def test_godaddy(godaddy_whois_record: WhoisRecord, godaddy_whois_rule: WhoisRul
         is True
     )
     assert condition(godaddy_whois_rule, {}) is False
+
+
+def test_rule_set():
+    rule_set = WhoisRuleSet.from_dir()
+    assert len(rule_set.root) > 0
