@@ -1,7 +1,6 @@
 import sys
 
 from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings
 
 config = Config(".env")
 
@@ -22,9 +21,6 @@ QUERY_CACHE_TTL: int = config("QUERY_CACHE_TTL", cast=int, default=60 * 60)
 QUERY_MAX_RETRIES: int = config("QUERY_MAX_RETRIES", cast=int, default=3)
 
 # Rule settings
-RULE_EXTENSIONS: CommaSeparatedStrings = config(
-    "RULE_EXTENSIONS", cast=CommaSeparatedStrings, default="yaml,yml"
-)
 ADDITIONAL_WHOIS_RULE_DIRECTORY: str | None = config(
     "ADDITIONAL_WHOIS_RULE_DIRECTORY", cast=str, default=None
 )
