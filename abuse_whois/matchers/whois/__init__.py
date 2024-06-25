@@ -1,13 +1,12 @@
-import itertools
-import pathlib
 from pathlib import Path
 
+from azuma.utils import expand_path
 from returns.maybe import Maybe
 
 from abuse_whois import schemas, settings
 from abuse_whois.utils import is_email, unique
 
-DEFAULT_RULE_DIRECTORY: pathlib.Path = pathlib.Path(__file__).parent / "./rules"
+DEFAULT_RULE_DIRECTORY: Path = Path(__file__).parent / "./rules"
 
 
 class WhoisRule(schemas.Rule):
@@ -21,10 +20,8 @@ class WhoisRuleSet(schemas.RootAPIModel):
     @classmethod
     def from_dir(cls, dir: str | Path = DEFAULT_RULE_DIRECTORY):
         dir = Path(dir) if isinstance(dir, str) else dir
-        paths = itertools.chain.from_iterable(
-            [dir.glob(f"**/*.{ext}") for ext in settings.RULE_EXTENSIONS]
-        )
-        return cls(root=[WhoisRule.model_validate_file(p) for p in paths])
+        expanded = expand_path(str(dir.joinpath("*.{yaml,yml}")))
+        return cls(root=[WhoisRule.model_validate_file(p) for p in expanded])
 
 
 def load_rule_set():

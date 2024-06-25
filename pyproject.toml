@@ -14,7 +14,7 @@ aiometer = "^0.5"
 asyncache = "^0.3"
 asyncer = "^0.0.7"
 asyncwhois = "^1.1"
-azuma = "^0.4"
+azuma = "^0.4.1"
 cachetools = "^5.3"
 fastapi = { extras = ["all"], version = "^0.111", optional = true }
 gunicorn = { version = "^22.0", optional = true }
