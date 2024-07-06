@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from azuma.utils import expand_path
+import senkawa
 
 from abuse_whois import schemas, settings
 from abuse_whois.utils import unique
@@ -19,7 +19,7 @@ class SharedHostingRuleSet(schemas.RootAPIModel):
     @classmethod
     def from_dir(cls, dir: str | Path = DEFAULT_RULE_DIRECTORY):
         dir = Path(dir) if isinstance(dir, str) else dir
-        expanded = expand_path(str(dir.joinpath("*.{yaml,yml}")))
+        expanded = senkawa.glob(str(dir.joinpath("*.{yaml,yml}")))
         return cls(root=[SharedHostingRule.model_validate_file(p) for p in expanded])
 
 

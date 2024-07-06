@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from azuma.utils import expand_path
+import senkawa
 from returns.maybe import Maybe
 
 from abuse_whois import schemas, settings
@@ -20,7 +20,7 @@ class WhoisRuleSet(schemas.RootAPIModel):
     @classmethod
     def from_dir(cls, dir: str | Path = DEFAULT_RULE_DIRECTORY):
         dir = Path(dir) if isinstance(dir, str) else dir
-        expanded = expand_path(str(dir.joinpath("*.{yaml,yml}")))
+        expanded = senkawa.glob(str(dir.joinpath("*.{yaml,yml}")))
         return cls(root=[WhoisRule.model_validate_file(p) for p in expanded])
 
 
