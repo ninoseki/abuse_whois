@@ -1,55 +1,63 @@
-[tool.poetry]
-name = "abuse_whois"
-version = "0.0.0"
+[project]
+name = "abuse-whois"
+dynamic = ["version"]
 description = "Find where to report a domain for abuse"
-authors = ["Manabu Niseki <manabu.niseki@gmail.com>"]
-license = "MIT"
-homepage = "https://github.com/ninoseki/abuse_whois"
-repository = "https://github.com/ninoseki/abuse_whois"
 readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "MIT"
+authors = [{ name = "Manabu Niseki", email = "manabu.niseki@gmail.com" }]
+dependencies = [
+  "aiometer>=0.5,<0.6",
+  "asyncache>=0.3.1",
+  "asyncer>=0.0.8",
+  "asyncwhois>=1.1.9",
+  "azuma>=0.5.1",
+  "cachetools>=5.5.0",
+  "loguru>=0.7.3",
+  "pydantic>=2.10.3",
+  "PyYAML>=6.0.2",
+  "returns>=0.24.0",
+  "stamina>=24.3.0",
+  "tld>=0.13,<0.14",
+  "validators~=0.34",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-aiometer = "^0.5"
-asyncache = "^0.3"
-asyncer = "^0.0.7"
-asyncwhois = "^1.1"
-azuma = "^0.4.2"
-cachetools = "^5.3"
-fastapi = { extras = ["all"], version = "^0.111", optional = true }
-gunicorn = { version = "^22.0", optional = true }
-loguru = "^0.7"
-pydantic = "^2.8"
-PyYAML = "^6.0"
-returns = "^0.23"
-stamina = "^24.2"
-tld = "^0.13"
-validators = "^0.30"
+[project.urls]
+Homepage = "https://github.com/ninoseki/abuse_whois"
+Repository = "https://github.com/ninoseki/abuse_whois"
 
-[tool.poetry.group.dev.dependencies]
-coveralls = "^4.0.1"
-mypy = "^1.10.1"
-pre-commit = "^3.7.1"
-pytest = "^8.2.2"
-pytest-asyncio = "^0.23.7"
-pytest-cov = "^5.0.0"
-pytest-mock = "^3.14.0"
-pytest-pretty = "^1.2"
-pytest-randomly = "^3.15"
-pyupgrade = "^3.16.0"
+[project.optional-dependencies]
+api = ["fastapi[all]>=0.115.6", "gunicorn>=23.0.0"]
 
-[tool.poetry.extras]
-api = ["fastapi", "gunicorn"]
-
-[tool.poetry.scripts]
+[project.scripts]
 abuse_whois = "abuse_whois.main:app"
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[dependency-groups]
+dev = [
+  "build>=1.2.2",
+  "coveralls>=4.0.1,<5.0.0",
+  "lefthook>=1.9.2",
+  "mypy>=1.13.0",
+  "pre-commit>=4.0.1",
+  "pytest>=8.3.4",
+  "pytest-asyncio>=0.25.0",
+  "pytest-cov>=6.0.0",
+  "pytest-mock>=3.14.0,<4.0.0",
+  "pytest-pretty>=1.2,<2.0",
+  "pytest-randomly>=3.16.0",
+  "ruff>=0.8.3",
+  "uv-sort>=0.4.0",
+]
 
 [tool.poetry-dynamic-versioning]
 enable = true
-
-[build-system]
-requires = ["poetry-core", "poetry-dynamic-versioning"]
-build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -67,10 +75,8 @@ select = [
   "RUF",   # Ruff-specific rules
   "SIM",   # flake8-simplify
   "T20",   # flake8-print
+  "UP",    # pyupgrade
   "W",     # pycodestyle warnings
-]
-ignore = [
-  "E501", # line too long, handled by black
 ]
 
 [tool.mypy]

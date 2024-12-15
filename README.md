@@ -6,7 +6,7 @@
 
 A Sigma and RDAP/Whois based abuse contacts finder.
 
-![img](./images/overview.jpg)
+![img](https://raw.githubusercontent.com/ninoseki/abuse_whois/main/images/overview.jpg)
 
 This tool is highly inspired from the following libraries:
 
