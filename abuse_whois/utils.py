@@ -97,7 +97,7 @@ def unique(src: Iterable[T], key: str | Callable[[T], Any] | None = None) -> lis
 
 def unique_iter(src: Iterable[T], key: str | Callable[[T], Any] | None = None):
     if not is_iterable(src):
-        raise TypeError("expected an iterable, not %r" % type(src))
+        raise TypeError(f"expected an iterable, not {type(src)!r}")
 
     def build_key_func():
         if key is None:
@@ -109,7 +109,7 @@ def unique_iter(src: Iterable[T], key: str | Callable[[T], Any] | None = None):
         if isinstance(key, str):
             return lambda x: getattr(x, key, x)
 
-        raise TypeError('"key" expected a string or callable, not %r' % key)
+        raise TypeError(f'"key" expected a string or callable, not {key!r}')
 
     key_func = build_key_func()
     seen = set()

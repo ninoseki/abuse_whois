@@ -1,0 +1,21 @@
+rc: .lefthookrc
+
+pre-commit:
+  commands:
+    uv-lock:
+      glob: "pyproject.toml"
+      run: uv lock
+    uv-sort:
+      glob: "pyproject.toml"
+      run: uv run uv-sort
+    ruff:
+      glob: "*.py"
+      run: uv run ruff check --fix {staged_files}
+      stage_fixed: true
+    ruff-format:
+      glob: "*.py"
+      run: uv run ruff format {staged_files}
+      stage_fixed: true
+    azuma:
+      glob: "abuse_whois/**/*.{yml,yaml}"
+      run: uv run azuma validate {staged_files}
