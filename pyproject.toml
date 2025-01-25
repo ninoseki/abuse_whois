@@ -7,18 +7,19 @@ requires-python = ">=3.10,<3.13"
 license = "MIT"
 authors = [{ name = "Manabu Niseki", email = "manabu.niseki@gmail.com" }]
 dependencies = [
-  "aiometer>=0.5,<0.6",
-  "asyncache>=0.3.1",
+  "aiometer~=0.5",
+  "asyncache~=0.3",
   "asyncer>=0.0.8",
-  "asyncwhois>=1.1.9",
-  "azuma>=0.5.1",
-  "cachetools>=5.5.0",
-  "loguru>=0.7.3",
-  "pydantic>=2.10.3",
-  "PyYAML>=6.0.2",
-  "returns>=0.24.0",
-  "stamina>=24.3.0",
-  "tld>=0.13,<0.14",
+  "asyncwhois~=1.1",
+  "azuma~=0.7",
+  "cachetools~=5.5",
+  "loguru~=0.7",
+  "pydantic>2.0.1,!=2.1.0,<3.0.0", # same as FastAPI
+  "PyYAML~=6.0",
+  "returns~=0.24",
+  "stamina~=24.3",
+  "starlette>=0.40.0,<0.46.0",     # same as FastAPI
+  "tld~=0.13",
   "validators~=0.34",
 ]
 
@@ -27,13 +28,13 @@ Homepage = "https://github.com/ninoseki/abuse_whois"
 Repository = "https://github.com/ninoseki/abuse_whois"
 
 [project.optional-dependencies]
-api = ["fastapi[all]>=0.115.6", "gunicorn>=23.0.0"]
+api = ["fastapi[all]~=0.115", "gunicorn~=23.0"]
 
 [project.scripts]
 abuse_whois = "abuse_whois.main:app"
 
 [build-system]
-requires = ["hatchling", "uv-dynamic-versioning"]
+requires = ["hatchling>=1.26", "uv-dynamic-versioning==0.4.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
@@ -43,16 +44,16 @@ source = "uv-dynamic-versioning"
 dev = [
   "build>=1.2.2",
   "coveralls>=4.0.1,<5.0.0",
-  "lefthook>=1.9.2",
-  "mypy>=1.13.0",
-  "pre-commit>=4.0.1",
+  "lefthook>=1.10.10",
+  "mypy>=1.14.1",
+  "pre-commit>=4.1.0",
   "pytest>=8.3.4",
-  "pytest-asyncio>=0.25.0",
+  "pytest-asyncio>=0.25.2",
   "pytest-cov>=6.0.0",
   "pytest-mock>=3.14.0,<4.0.0",
   "pytest-pretty>=1.2,<2.0",
   "pytest-randomly>=3.16.0",
-  "ruff>=0.8.3",
+  "ruff>=0.9.3",
   "uv-sort>=0.4.0",
 ]
 
