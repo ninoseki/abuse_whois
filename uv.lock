@@ -3,7 +3,7 @@ requires-python = ">=3.10, <3.13"
 
 [[package]]
 name = "abuse-whois"
-version = "0.10.1.post1.dev0+e750989"
+version = "0.10.1.post2.dev0+c10fd2a"
 source = { editable = "." }
 dependencies = [
     { name = "aiometer" },
@@ -169,7 +169,7 @@ wheels = [
 
 [[package]]
 name = "azuma"
-version = "0.7.2"
+version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lark", extra = ["interegular"] },
@@ -181,9 +181,9 @@ dependencies = [
     { name = "senkawa" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c0/f2/5664797df7c197e3c431bb7c34124b919ee4fbddb9fbf403a9f18c3626f9/azuma-0.7.2.tar.gz", hash = "sha256:f60059df01b60e969cc628a0a836c2e40453310baeaa4f38ed65cc549f80e631", size = 74834 }
+sdist = { url = "https://files.pythonhosted.org/packages/ee/29/f8b256fdac9b78d675a4202dc1683fec72952366fa200f2c957a7c5b94fb/azuma-0.7.3.tar.gz", hash = "sha256:6d262d8836c6c5f969c0ab8877fa81ff44e25adf396048e2d7372fc45f203749", size = 74867 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/74/70/7763d5bec8a1f69da79411454f9412db463f5f090c2052f6af650cc35bfa/azuma-0.7.2-py3-none-any.whl", hash = "sha256:e974047b3507bcb3f0df32c27f97b99440034e6cd5ab820e18ef68c4bed07eb9", size = 18486 },
+    { url = "https://files.pythonhosted.org/packages/64/fe/0730276b3789ae707f6629fe2032e4be8a99f5c9565d0aa051e251b16d90/azuma-0.7.3-py3-none-any.whl", hash = "sha256:81ebdb224c7ebd49439716e23bdffb7df4ede11555ba3ccccfc6ab7ee3538c5b", size = 18494 },
 ]
 
 [[package]]
